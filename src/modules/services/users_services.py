@@ -39,7 +39,7 @@ class UsersServices():
         return AuthResponse(access_token=access_token,refresh_token=refresh_token)
     
     def handle_refresh_access_token(self,user:User):
-        access_token=self.create_access_token(user)
+        access_token=self.create_access_token(user, user.role.scopes)
         return access_token
     
 
@@ -116,7 +116,7 @@ class UsersServices():
         user=UsersServices.check_user_validity(username)
         
         scopes:list[str]= user.role.scopes #payload.get('scopes')
-        user=UsersServices.check_scopes(security_scopes,scopes)
+        UsersServices.check_scopes(security_scopes,scopes)
         
     
         return user
@@ -166,16 +166,6 @@ class UsersServices():
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        
-    
-    #def check_scopes(security_scopes:SecurityScopes,
-     #                      token:Annotated[str, Depends(oauth2_scheme)]):
-      #  
-       # required_scopes = security_scopes.scopes
-       # if required_scopes:
-        #    for scope in required_scopes:
-         #       if scope not in payload.get("scopes", []):
-                #    raise credentials_exception
         
     
 
