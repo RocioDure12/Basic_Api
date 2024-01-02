@@ -43,5 +43,6 @@ class UsersController():
     def login_user(self,form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
         return self._users_services.handle_authentication(form_data.username, form_data.password)
     
-    def refresh_token(self):
-       pass
+    def refresh_access_token(self,user:Annotated[User,
+                                     Security(UsersServices.check_refresh_token)]):
+       return self._users_services.handle_refresh_access_token(user)

@@ -38,6 +38,10 @@ class UsersServices():
         refresh_token=self.create_refresh_token(user)
         return AuthResponse(access_token=access_token,refresh_token=refresh_token)
     
+    def handle_refresh_access_token(self,user:User):
+        access_token=self.create_access_token(user)
+        return access_token
+    
 
     
     def create_token(self,
