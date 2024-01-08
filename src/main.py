@@ -7,13 +7,13 @@ from modules.routers.users_router import router as users_router
 from modules.routers.roles_router import router as roles_router
 from modules.models.user import User
 from modules.services.db_services import DbServices
-from fastapi_pagination import add_pagination
+
 
 app = FastAPI()
 app.include_router(users_router)
 app.include_router(roles_router)
 db=DbServices()
-add_pagination(app)
+
 
 
 def create_tables():

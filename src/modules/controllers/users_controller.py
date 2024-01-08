@@ -4,7 +4,7 @@ from fastapi.security import  OAuth2PasswordRequestForm
 from typing import Annotated
 from fastapi import Depends, Security
 from ..services.users_services import UsersServices
-from fastapi_pagination import Page, paginate,add_pagination
+
 
 
 class UsersController():
@@ -48,7 +48,7 @@ class UsersController():
                                      Security(UsersServices.check_refresh_token)]):
        return self._users_services.handle_refresh_access_token(user)
    
-    def get_users(self)->Page[User]:
+"""def get_users(self, response_model=Page[User]):
         users=self._users_repository.read()
-        return paginate(users)
-        
+        return paginate(User)
+"""       
