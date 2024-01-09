@@ -13,13 +13,17 @@ class UsersController():
         self._users_repository=UsersRepository()
         self._users_services=UsersServices()
         
-    def create(self, item:User):
-        return self._users_repository.create(item)
+    def create(self, user:Annotated[User,
+                                  Security(UsersServices.check_access_token,
+                                           scopes=['users:create'])]):
+        return self._users_repository.create(user)
     
+    """
     def read(self, user:Annotated[User,
                                   Security(UsersServices.check_access_token,
                                            scopes=['users:read'])]):
         return self._users_repository.read()
+    """
     
     def read_by_id(self,
                    user:Annotated[User,
@@ -49,9 +53,6 @@ class UsersController():
                                      Security(UsersServices.check_refresh_token)]):
        return self._users_services.handle_refresh_access_token(user)
    
-    """def get_users(self, response_model=List[User]):
-        users=self._users_repository.pagination(response_model)
-        return users     
-    """
+
     def read_users(self, offset:int, limit:int):
         return self._users_repository.read_users(offset, limit)
