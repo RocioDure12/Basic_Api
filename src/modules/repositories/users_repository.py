@@ -1,10 +1,11 @@
 from ..services.db_services import DbServices
 from sqlmodel import Session, SQLModel,select
 from ..models.user import User
-from typing import Optional
+from typing import Optional,List
 from ..services.password_services import PasswordServices
 from ..models.role import Role
 from sqlalchemy.orm import joinedload
+from fastapi import Query
 
 class UsersRepository:
     def __init__(self):
@@ -73,7 +74,13 @@ class UsersRepository:
             session.delete(user)
             session.commit()
     
- 
-            
-            
+    """
+    def pagination(self, skip:int=Query(0, alias="page"), limit:int=10, alias="element for page"):
+        items=self.read()
+        return items[skip:skip + limit]
+    """    
+    def read_users(self,offset:int=0, limit:int=Query(default=2, le=2))->List[User]:
+        with Session(self._db_services.get_engine()) as session:
+            users = session.exec(select(User).offset(offset).limit(limit)).all()
+            return users
         
