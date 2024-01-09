@@ -53,5 +53,5 @@ class UsersController():
         users=self._users_repository.pagination(response_model)
         return users     
     """
-    def read_users(self):
-        return self._users_repository.read_users()
+    def read_users(self, offset:int, limit:int):
+        return self._users_repository.read_users(offset, limit)

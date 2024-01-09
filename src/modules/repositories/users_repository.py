@@ -79,7 +79,7 @@ class UsersRepository:
         items=self.read()
         return items[skip:skip + limit]
     """    
-    def read_users(self,offset:int=0, limit:int=Query(default=2, le=2))->List[User]:
+    def read_users(self,offset:int, limit:int)->List[User]:
         with Session(self._db_services.get_engine()) as session:
             users = session.exec(select(User).offset(offset).limit(limit)).all()
             return users
