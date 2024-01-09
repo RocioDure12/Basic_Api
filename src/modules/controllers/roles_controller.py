@@ -10,16 +10,20 @@ class RolesController():
         self._roles_repository=RolesRepository()
         self._users_services=UsersServices()
         
-    def create(self, item:Role):
+    def create(self, item:Annotated[Role,
+                                  Security(UsersServices.check_access_token,
+                                           scopes=['roles:create'])]):
         return self._roles_repository.create(item)
     
     def read(self, item:Annotated[Role,
                                   Security(UsersServices.check_access_token,
-                                           scopes=['users:read','popo'])]):
+                                           scopes=['users:read'])]):
         return self._roles_repository.read()
     
     
-    def update(self, id:int, update_item:Role):
+    def update(self, id:int, update_item:Annotated[Role,
+                                  Security(UsersServices.check_access_token,
+                                           scopes=['roles:update'])]):
         return self._roles_repository.update(id, update_item)
     
     def delete(self,id:int):
