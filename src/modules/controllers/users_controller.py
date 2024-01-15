@@ -13,9 +13,7 @@ class UsersController():
         self._users_repository=UsersRepository()
         self._users_services=UsersServices()
         
-    def create(self, user:Annotated[User,
-                                  Security(UsersServices.check_access_token,
-                                           scopes=['users:create'])]):
+    def create(self, user:User):                 
         return self._users_repository.create(user)
     
     """

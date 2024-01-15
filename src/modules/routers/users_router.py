@@ -9,6 +9,7 @@ router=APIRouter(
 
 controller=UsersController()
 router.add_api_route('/login', controller.login_user, methods=['POST'])
+
 router.add_api_route('/',controller.create, methods=['POST'])
 #router.add_api_route('/',controller.read, methods=['GET'])
 router.add_api_route('/{id}',controller.update, methods=['PUT'])
@@ -18,7 +19,7 @@ router.add_api_route('/readme',controller.read_me, methods=['GET'])
 router.add_api_route('/refresh-token', controller.refresh_access_token, methods=['GET'])
 router.add_api_route('/pagination', controller.read_users, methods=['GET'],response_model=List[User])
 router.add_api_route('/{id}', controller.read_by_id, methods=['GET'])
-router.add_api_route('/{id}', controller.read_by_id, methods=['GET'])
+
 
 
 
