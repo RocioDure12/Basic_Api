@@ -14,14 +14,14 @@ class UsersController():
         self._users_services=UsersServices()
         
     def create(self, user:User):                 
-        return self._users_repository.create(user)
+        return self._users_services.handle_account_registration(user)
     
-    """
+    
     def read(self, user:Annotated[User,
                                   Security(UsersServices.check_access_token,
                                            scopes=['users:read'])]):
         return self._users_repository.read()
-    """
+
     
     def read_by_id(self,
                    user:Annotated[User,

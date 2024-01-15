@@ -7,10 +7,13 @@ from ..models.role import Role
 from sqlalchemy.orm import joinedload
 from fastapi import Query
 
+
 class UsersRepository:
     def __init__(self):
         self._db_services=DbServices()
         self._password_services=PasswordServices()
+     
+    
         
     def create(self, item:User):
         hashed_password=self._password_services.hash_password(item.password)

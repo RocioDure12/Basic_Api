@@ -20,6 +20,8 @@ class UsersServices():
     _users_repository=UsersRepository()
     _auth_response=AuthResponse()
     
+    
+    
     def authenticate_user(self, username:str, plain_password:str):
         user= UsersServices.check_user_validity(username)
         if user and self._password_services.verify_password(user.password, plain_password):
@@ -42,7 +44,6 @@ class UsersServices():
         access_token=self.create_access_token(user, user.role.scopes)
         return access_token
     
-
     
     def create_token(self,
                      user:User, 
@@ -153,6 +154,7 @@ class UsersServices():
         if user.disabled:
             raise HTTPException(status_code=400, detail="Inactive user")
         return user
+
     
     @staticmethod
     def check_scopes(security_scopes:SecurityScopes,scopes):
@@ -165,6 +167,17 @@ class UsersServices():
                 detail="Not enough permissions",
                 headers={"WWW-Authenticate": "Bearer"},
             )
+    
+    @staticmethod
+    def handle_account_registration(item:User):
+        users=UsersRepository().read()
+        for user in users:
+            if user.username == item.username:
+                raise HTTPException(status_code=400, detail="The username is already in use. Please choose another username")
+            if user.email == item.email:
+                raise HTTPException(status_code=400, detail="The email address is already registered. Please use a different email address")
+        
+        return UsersRepository().create(item)
 
         
     
