@@ -10,8 +10,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 import os
 from ..models.auth_response import AuthResponse
-import smtplib
-from email.mime.text import MIMEText
+
 
 
                 

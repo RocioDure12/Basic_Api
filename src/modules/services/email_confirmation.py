@@ -1,3 +1,9 @@
+import smtplib
+from email.mime.text import MIMEText
+
+class EmailConfirmation():
+    pass
+
 """@staticmethod
     def handle_account_registration(item:User):
         users=UsersRepository().read()
