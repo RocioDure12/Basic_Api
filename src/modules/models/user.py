@@ -17,6 +17,7 @@ class User(SQLModel,table=True):
     username:str
     password:str
     disabled:bool
+    is_verified:bool
     deleted_at:Optional[datetime]=None
     created_at:datetime=Field(default_factory=datetime.utcnow,nullable=False)
     updated_at:Optional[datetime] = None

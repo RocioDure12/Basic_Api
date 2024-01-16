@@ -10,12 +10,14 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 import os
 from ..models.auth_response import AuthResponse
+import smtplib
+from email.mime.text import MIMEText
 
 
                 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-class UsersServices():
+class AuthenticationHandler():
     _password_services=PasswordServices()
     _users_repository=UsersRepository()
     _auth_response=AuthResponse()
@@ -23,7 +25,7 @@ class UsersServices():
     
     
     def authenticate_user(self, username:str, plain_password:str):
-        user= UsersServices.check_user_validity(username)
+        user= AuthenticationHandler.check_user_validity(username)
         if user and self._password_services.verify_password(user.password, plain_password):
             return user
     
@@ -38,7 +40,8 @@ class UsersServices():
         
         access_token=self.create_access_token(user, user.role.scopes)
         refresh_token=self.create_refresh_token(user)
-        return AuthResponse(access_token=access_token,refresh_token=refresh_token)
+        verification_token=self.create_verification_token(user)
+        return AuthResponse(access_token=access_token,refresh_token=refresh_token, verification_token=verification_token)
     
     def handle_refresh_access_token(self,user:User):
         access_token=self.create_access_token(user, user.role.scopes)
@@ -83,6 +86,14 @@ class UsersServices():
                                  token_secret=os.getenv(f'JWT_REFRESH_TOKEN_SECRET'),
                                  token_algorithm=os.getenv(f'JWT_REFRESH_TOKEN_ALGORITHM')
                                  )
+        
+    def create_verification_token(self, user:User):
+        return self.create_token(user,
+                                 [],
+                                 expiration_minutes=os.getenv(f'JWT_VERIFICATION_TOKEN_EXPIRE_MINUTES'),
+                                 token_secret=os.getenv(f'JWT_VERIFICATION_TOKEN_SECRET'),
+                                 token_algorithm=os.getenv(f'JWT_VERIFICATION_TOKEN_ALGORITHM')
+                                 )
     
     @staticmethod
     def check_token(security_scopes:SecurityScopes,
@@ -114,10 +125,10 @@ class UsersServices():
         username:str = payload.get('sub')
         if username is None:
             raise credentials_exception
-        user=UsersServices.check_user_validity(username)
+        user=AuthenticationHandler.check_user_validity(username)
         
         scopes:list[str]= user.role.scopes #payload.get('scopes')
-        UsersServices.check_scopes(security_scopes,scopes)
+        AuthenticationHandler.check_scopes(security_scopes,scopes)
         
     
         return user
@@ -126,7 +137,7 @@ class UsersServices():
     @staticmethod
     def check_access_token(security_scopes:SecurityScopes,
                            token:Annotated[str, Depends(oauth2_scheme)]):
-        return UsersServices.check_token(
+        return AuthenticationHandler.check_token(
                                 security_scopes,
                                 token=token,
                                 jwt_secret=os.getenv(f'JWT_ACCESS_TOKEN_SECRET'),
@@ -136,11 +147,21 @@ class UsersServices():
     @staticmethod
     def check_refresh_token(security_scopes:SecurityScopes,
                            token:Annotated[str, Depends(oauth2_scheme)]):
-        return UsersServices.check_token(
+        return AuthenticationHandler.check_token(
                                 security_scopes,
                                 token=token,
                                 jwt_secret=os.getenv(f'JWT_REFRESH_TOKEN_SECRET'),
                                 jwt_algorithm=os.getenv(f'JWT_REFRESH_TOKEN_ALGORITHM')
+                                )
+    
+    @staticmethod
+    def check_verification_token(security_scopes:SecurityScopes,
+                           token:Annotated[str, Depends(oauth2_scheme)]):
+        return AuthenticationHandler.check_token(
+                                security_scopes,
+                                token=token,
+                                jwt_secret=os.getenv(f'JWT_VERIFICATION_TOKEN_SECRET'),
+                                jwt_algorithm=os.getenv(f'JWT_VERIFICATION_TOKEN_ALGORITHM')
                                 )
     @staticmethod
     def check_user_validity( username:str):
@@ -168,21 +189,9 @@ class UsersServices():
                 headers={"WWW-Authenticate": "Bearer"},
             )
     
-    @staticmethod
-    def handle_account_registration(item:User):
-        users=UsersRepository().read()
-        for user in users:
-            if user.username == item.username:
-                raise HTTPException(status_code=400, detail="The username is already in use. Please choose another username")
-            if user.email == item.email:
-                raise HTTPException(status_code=400, detail="The email address is already registered. Please use a different email address")
-        
-        return UsersRepository().create(item)
 
-        
     
-
-
+    
       
         
         
