@@ -1,7 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 
-class EmailConfirmation():
+class Registration_Handler():
     pass
 
 """@staticmethod
