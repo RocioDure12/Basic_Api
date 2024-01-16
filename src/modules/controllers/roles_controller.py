@@ -10,9 +10,7 @@ class RolesController():
         self._roles_repository=RolesRepository()
         self._authentication_handler=AuthenticationHandler()
         
-    def create(self, item:Annotated[Role,
-                                  Security(AuthenticationHandler.check_access_token,
-                                           scopes=['roles:create'])]):
+    def create(self, item:Role):
         return self._roles_repository.create(item)
     
     def read(self, item:Annotated[Role,
@@ -21,9 +19,7 @@ class RolesController():
         return self._roles_repository.read()
     
     
-    def update(self, id:int, update_item:Annotated[Role,
-                                  Security(AuthenticationHandler.check_access_token,
-                                           scopes=['roles:update'])]):
+    def update(self, id:int, update_item:Role):
         return self._roles_repository.update(id, update_item)
     
     def delete(self,id:int):

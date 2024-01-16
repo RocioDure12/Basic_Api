@@ -5,6 +5,7 @@ from typing import Annotated
 from fastapi import Depends, Security
 from ..services.authentication_handler import AuthenticationHandler
 from typing import List
+from ..services.registration_handler import Registration_Handler
 
 
 
@@ -12,10 +13,11 @@ class UsersController():
     def __init__(self):
         self._users_repository=UsersRepository()
         self._authentication_handler=AuthenticationHandler()
+        self._registration_handler=Registration_Handler
         
     def create(self, user:User):                 
-        return self._authentication_handler.handle_account_registration(user)
-    #arreglar esto ya que movi handle_account_registration a otro archivo
+        return self._registration_handler.handle_account_registration(user)
+
     
     
     def read(self, user:Annotated[User,

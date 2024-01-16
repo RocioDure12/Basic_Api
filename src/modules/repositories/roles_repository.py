@@ -27,7 +27,6 @@ class RolesRepository:
       
     def update(self,id:int,update_item:Role):
         with Session(self._db_services.get_engine()) as session:
-            print("aca estoy")
             statement=select(Role).where(Role.id == id)
             result=session.exec(statement)
             role=result.one()
