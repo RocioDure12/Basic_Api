@@ -6,18 +6,21 @@ from ..services.password_services import PasswordServices
 from ..models.role import Role
 from sqlalchemy.orm import joinedload
 from fastapi import Query
+from ..services.registration_handler import Registration_Handler
 
 
 class UsersRepository:
     def __init__(self):
         self._db_services=DbServices()
         self._password_services=PasswordServices()
+        self._registration=Registration_Handler()
      
     
         
     def create(self, item:User):
         hashed_password=self._password_services.hash_password(item.password)
         item.password=hashed_password
+        item.verification_code=self._registration.generate_verification_code()
         with Session(self._db_services.get_engine()) as session: 
             session.add(item)
             session.commit()

@@ -1,8 +1,11 @@
-import smtplib
 from email.mime.text import MIMEText
 from ..repositories.users_repository import UsersRepository
 from ..models.user import User
 from fastapi import HTTPException
+from email.message import EmailMessage
+import smtplib
+import secrets
+
 
 class Registration_Handler():
     @staticmethod
@@ -15,6 +18,10 @@ class Registration_Handler():
                         raise HTTPException(status_code=400, detail="The email address is already registered. Please use a different email address")
                 
                 return UsersRepository().create(item)
+    
+    def generate_verification_code():
+    # Genera un código aleatorio y seguro
+        return secrets.token_urlsafe(6)
         
 
         
