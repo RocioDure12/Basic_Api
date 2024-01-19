@@ -1,32 +1,25 @@
-from email.mime.text import MIMEText
-from ..repositories.users_repository import UsersRepository
-from ..models.user import User
-from fastapi import HTTPException
-from email.message import EmailMessage
-import smtplib
-import secrets
 
-
-class Registration_Handler():
-    @staticmethod
-    def handle_account_registration(item:User):
-                users=UsersRepository().read()
+         
+#def generate_verification_code(self):
+    # Genera un código aleatorio y seguro
+ #       return secrets.token_urlsafe(6)
+    
+"""
+    def handle_account_registration(self,item:User):
+                users=self._users_repository.read()
                 for user in users:
                     if user.username == item.username:
                         raise HTTPException(status_code=400, detail="The username is already in use. Please choose another username")
                     if user.email == item.email:
                         raise HTTPException(status_code=400, detail="The email address is already registered. Please use a different email address")
                 
-                return UsersRepository().create(item)
+                return self._users_repository.create(item)
     
-    def generate_verification_code():
-    # Genera un código aleatorio y seguro
-        return secrets.token_urlsafe(6)
+
         
 
         
-    
-"""
+
 def verification_email(email, token:str):
     subject = "Account Verification"
     body = f"Click the following link to verify your account: https://your-app.com/verify?token={token}"
@@ -43,4 +36,4 @@ def verification_email(email, token:str):
             server.sendmail(EMAIL_SENDER, [email], message.as_string())
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error sending verification email: {str(e)}")
-        """
+"""

@@ -16,7 +16,7 @@ from ..models.auth_response import AuthResponse
                 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-class AuthenticationHandler():
+class AuthenticationUsersServices():
     _password_services=PasswordServices()
     _users_repository=UsersRepository()
     _auth_response=AuthResponse()
@@ -24,7 +24,7 @@ class AuthenticationHandler():
     
     
     def authenticate_user(self, username:str, plain_password:str):
-        user= AuthenticationHandler.check_user_validity(username)
+        user= AuthenticationUsersServices.check_user_validity(username)
         if user and self._password_services.verify_password(user.password, plain_password):
             return user
     
@@ -39,8 +39,7 @@ class AuthenticationHandler():
         
         access_token=self.create_access_token(user, user.role.scopes)
         refresh_token=self.create_refresh_token(user)
-        verification_token=self.create_verification_token(user)
-        return AuthResponse(access_token=access_token,refresh_token=refresh_token, verification_token=verification_token)
+        return AuthResponse(access_token=access_token,refresh_token=refresh_token)
     
     def handle_refresh_access_token(self,user:User):
         access_token=self.create_access_token(user, user.role.scopes)
@@ -86,13 +85,7 @@ class AuthenticationHandler():
                                  token_algorithm=os.getenv(f'JWT_REFRESH_TOKEN_ALGORITHM')
                                  )
         
-    def create_verification_token(self, user:User):
-        return self.create_token(user,
-                                 [],
-                                 expiration_minutes=os.getenv(f'JWT_VERIFICATION_TOKEN_EXPIRE_MINUTES'),
-                                 token_secret=os.getenv(f'JWT_VERIFICATION_TOKEN_SECRET'),
-                                 token_algorithm=os.getenv(f'JWT_VERIFICATION_TOKEN_ALGORITHM')
-                                 )
+
     
     @staticmethod
     def check_token(security_scopes:SecurityScopes,
@@ -124,10 +117,10 @@ class AuthenticationHandler():
         username:str = payload.get('sub')
         if username is None:
             raise credentials_exception
-        user=AuthenticationHandler.check_user_validity(username)
+        user=AuthenticationUsersServices.check_user_validity(username)
         
         scopes:list[str]= user.role.scopes #payload.get('scopes')
-        AuthenticationHandler.check_scopes(security_scopes,scopes)
+        AuthenticationUsersServices.check_scopes(security_scopes,scopes)
         
     
         return user
@@ -136,7 +129,7 @@ class AuthenticationHandler():
     @staticmethod
     def check_access_token(security_scopes:SecurityScopes,
                            token:Annotated[str, Depends(oauth2_scheme)]):
-        return AuthenticationHandler.check_token(
+        return AuthenticationUsersServices.check_token(
                                 security_scopes,
                                 token=token,
                                 jwt_secret=os.getenv(f'JWT_ACCESS_TOKEN_SECRET'),
@@ -146,22 +139,14 @@ class AuthenticationHandler():
     @staticmethod
     def check_refresh_token(security_scopes:SecurityScopes,
                            token:Annotated[str, Depends(oauth2_scheme)]):
-        return AuthenticationHandler.check_token(
+        return AuthenticationUsersServices.check_token(
                                 security_scopes,
                                 token=token,
                                 jwt_secret=os.getenv(f'JWT_REFRESH_TOKEN_SECRET'),
                                 jwt_algorithm=os.getenv(f'JWT_REFRESH_TOKEN_ALGORITHM')
                                 )
     
-    @staticmethod
-    def check_verification_token(security_scopes:SecurityScopes,
-                           token:Annotated[str, Depends(oauth2_scheme)]):
-        return AuthenticationHandler.check_token(
-                                security_scopes,
-                                token=token,
-                                jwt_secret=os.getenv(f'JWT_VERIFICATION_TOKEN_SECRET'),
-                                jwt_algorithm=os.getenv(f'JWT_VERIFICATION_TOKEN_ALGORITHM')
-                                )
+    
     @staticmethod
     def check_user_validity( username:str):
         user= UsersRepository().read_by_username(username)

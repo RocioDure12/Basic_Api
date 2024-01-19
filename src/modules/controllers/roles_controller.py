@@ -3,18 +3,18 @@ from ..repositories.roles_repository import RolesRepository
 from fastapi.security import  OAuth2PasswordRequestForm
 from typing import Annotated
 from fastapi import Depends, Security
-from ..services.authentication_handler import AuthenticationHandler
+from ..services.authentication_users_services import AuthenticationUsersServices
 
 class RolesController():
     def __init__(self):
         self._roles_repository=RolesRepository()
-        self._authentication_handler=AuthenticationHandler()
+        self._authentication_handler=AuthenticationUsersServices()
         
     def create(self, item:Role):
         return self._roles_repository.create(item)
     
     def read(self, item:Annotated[Role,
-                                  Security(AuthenticationHandler.check_access_token,
+                                  Security(AuthenticationUsersServices.check_access_token,
                                            scopes=['users:read'])]):
         return self._roles_repository.read()
     
