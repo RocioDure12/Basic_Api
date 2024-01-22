@@ -19,7 +19,7 @@ db=DbServices()
 def create_tables():
     SQLModel.metadata.create_all(db.get_engine()) 
 
-#create_tables()
+create_tables()
 
 
 

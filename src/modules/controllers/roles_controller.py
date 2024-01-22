@@ -4,6 +4,7 @@ from fastapi.security import  OAuth2PasswordRequestForm
 from typing import Annotated
 from fastapi import Depends, Security
 from ..services.authentication_users_services import AuthenticationUsersServices
+from ..services.token_services import TokenServices
 
 class RolesController():
     def __init__(self):
@@ -14,7 +15,7 @@ class RolesController():
         return self._roles_repository.create(item)
     
     def read(self, item:Annotated[Role,
-                                  Security(AuthenticationUsersServices.check_access_token,
+                                  Security(TokenServices.check_access_token,
                                            scopes=['users:read'])]):
         return self._roles_repository.read()
     
