@@ -4,10 +4,8 @@ from fastapi.security import  OAuth2PasswordRequestForm
 from typing import Annotated
 from fastapi import Depends, Security
 from ..services.authentication_users_services import AuthenticationUsersServices
-from typing import List
-#from ..services.registration_handler import Registration_Handler
-from ..services.email_verification_services import EmailVerificationServices
 from ..services.token_services import TokenServices
+from ..services.users_services import UsersServices
 
 
 
@@ -15,13 +13,13 @@ class UsersController():
     def __init__(self):
         self._users_repository=UsersRepository()
         self._authentication_users_services=AuthenticationUsersServices()
-        self._email_verification_services=EmailVerificationServices()
+        self._users_services=UsersServices()
+
         
         #self._registration_handler=Registration_Handler
         
     def create(self, user:User):                 
-        #return self._registration_handler.handle_account_registration(user)
-        return self._email_verification_services.handle_account_registration(user)
+        return self._users_services.handle_account_registration(user)
       
 
     

@@ -2,13 +2,8 @@ from ..models.user import User
 from ..models.role import Role
 from ..repositories.users_repository import UsersRepository
 from .password_services import PasswordServices
-
-from typing import Annotated
-from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm, SecurityScopes
-from jose import JWTError, jwt
-from passlib.context import CryptContext
-import os
+from fastapi import  HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from ..models.auth_response import AuthResponse
 from ..services.user_validation_services import UserValidationServices
 from ..services.token_services import TokenServices

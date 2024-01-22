@@ -1,25 +1,23 @@
 from ..services.db_services import DbServices
-from sqlmodel import Session, SQLModel,select
+from sqlmodel import Session,select
 from ..models.user import User
-from typing import Optional,List
+from typing import List
 from ..services.password_services import PasswordServices
-from ..models.role import Role
 from sqlalchemy.orm import joinedload
-from fastapi import Query
-from ..services.email_verification_services import EmailVerificationServices
+
+
 
 
 class UsersRepository:
     def __init__(self):
         self._db_services=DbServices()
         self._password_services=PasswordServices()
-        self._email_verification_services=EmailVerificationServices()
+
 
      
     def create(self, item:User):
         hashed_password=self._password_services.hash_password(item.password)
         item.password=hashed_password
-        item.verification_code=self._email_verification_services.generate_verification_code()
         with Session(self._db_services.get_engine()) as session: 
             session.add(item)
             session.commit()
