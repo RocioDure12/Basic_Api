@@ -25,6 +25,6 @@ def create_tables():
 
 
 def enviar():
-    return lala.enviar_correo()
+    return lala.send_email()
 
 #enviar()
