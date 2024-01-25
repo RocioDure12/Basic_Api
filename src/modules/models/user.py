@@ -4,6 +4,8 @@ from pydantic import EmailStr
 from datetime import datetime
 from typing import TYPE_CHECKING
 from ..models.role import Role
+from ..models.task import Task
+
 #if TYPE_CHECKING:
 #from .category import Category
 #from .product import Product
@@ -24,6 +26,8 @@ class User(SQLModel,table=True):
     updated_at:Optional[datetime] = None
     role_id:Optional[int]=Field(default=None, foreign_key="role.id")
     role:Optional[Role]=Relationship()
+    task:Optional[Task]=Relationship()
+    
     
     #products:List[Product]=Relationship(back_populates="user")
     #categories:List[Category]=Relationship(back_populates="user")
