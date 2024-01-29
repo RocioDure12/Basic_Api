@@ -1,21 +1,31 @@
 from ..services.db_services import DbServices
 from sqlmodel import Session, SQLModel,select
 from ..models.task import Task
+from ..models.user import User
 from typing import List
+
+
+
 
 class TasksRepository:
     def __init__(self):
         self._db_services = DbServices()
     
     def create(self, item:Task):
+      
         with Session(self._db_services.get_engine()) as session:
             session.add(item)
             session.commit()
             session.refresh(item)
         return item
     
-    def read_my_tasks(self)->[Task]:
-        pass
+    def read_my_tasks(self, user_id)->[Task]:
+        with Session(self._db_services.get_engine()) as session:
+            statement=select(Task).where(Task.user_id == user_id)
+            results=session.exec(statement)
+            tasks=results.all()
+        return tasks
+        
     #pendiente de programar la logica de esta funcion
     
     def update(self, id:int, update_item:Task):
