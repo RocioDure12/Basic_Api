@@ -25,8 +25,7 @@ class TasksRepository:
             results=session.exec(statement)
             tasks=results.all()
         return tasks
-        
-    #pendiente de programar la logica de esta funcion
+
     
     def update(self, id:int, update_item:Task):
         with Session(self._db_services.get_engine()) as session:

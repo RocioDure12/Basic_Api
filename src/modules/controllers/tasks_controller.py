@@ -21,8 +21,13 @@ class TasksController:
         user_id=user.id
         return self._tasks_repository.read_my_tasks(user_id)
     
-    def update(self):
-        return self._tasks_repository.update()
+    def update(self,id,update_item:Task,user:Annotated[User,
+                                               Security(TokenServices.check_access_token,
+                                              scopes=[])]):
     
-    def delete(self):
-        return self._tasks_repository.delete()
+        return self._tasks_repository.update( id,update_item)
+    
+    def delete(self, id,user:Annotated[User,
+                                       Security(TokenServices.check_access_token,
+                                       scopes=[])]):
+        return self._tasks_repository.delete(id)
