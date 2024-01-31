@@ -10,7 +10,6 @@ from ..services.token_services import TokenServices
 
 
 
-                
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 class AuthenticationUsersServices():

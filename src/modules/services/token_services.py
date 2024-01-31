@@ -8,11 +8,16 @@ from fastapi.security import OAuth2PasswordBearer,SecurityScopes
 from ..models.user import User
 from datetime import datetime, timedelta
 from ..models.user import User
+import secrets
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 class TokenServices:
+    
+    def generate_verification_token(self):
+        return secrets.token_hex(32)
+    
     def create_token(self,
                      user:User, 
                      scopes:list[str],

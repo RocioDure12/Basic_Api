@@ -5,7 +5,7 @@ from typing import Annotated
 from fastapi import Depends, Security
 from ..services.authentication_users_services import AuthenticationUsersServices
 from ..services.token_services import TokenServices
-from ..services.users_services import UsersServices
+from ..services.registration_users_services import UsersServices
 
 
 
