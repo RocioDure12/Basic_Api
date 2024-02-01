@@ -6,6 +6,7 @@ from fastapi import Depends, Security
 from ..services.authentication_users_services import AuthenticationUsersServices
 from ..services.token_services import TokenServices
 from ..services.registration_users_services import Registration_UsersServices
+from ..services.email_services import EmailServices
 
 
 
@@ -14,14 +15,14 @@ class UsersController():
         self._users_repository=UsersRepository()
         self._authentication_users_services=AuthenticationUsersServices()
         self._registration_users_services=Registration_UsersServices()
+        self._email_services=EmailServices()
 
     
         
     def create(self, user:User):
-        return self._registration_users_services.handle_account_registration(user)
+        return self._registration_users_services.user_registration_db(user)
       
 
-    
     
     def read(self, user:Annotated[User,
                                   Security(TokenServices.check_access_token,
@@ -62,4 +63,4 @@ class UsersController():
         return self._users_repository.read_users(offset, limit)
     
     def verify_user_account(self, token:str):
-        return self._users_repository.get_by_verification_token(token)
+        return self._email_services.verify_email(token)

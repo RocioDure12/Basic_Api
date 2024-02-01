@@ -38,15 +38,23 @@ class Registration_UsersServices:
         
         return new_user            
         
-        
-        
-    def handle_account_registration(self, new_user:User):
+    def user_registration_db(self, new_user:User):
         self.verify_user(new_user)
         new_user.verification_code=self._token_services.generate_verification_token()
         self._users_repository.create(new_user)
-        #enviar email de verificacion al nuevo user
-        self._email_services.send_email(new_user)
+        return new_user
+          
+   
+    def handle_account_registration(self,user:User):
+        self._email_services.send_email(user)
+        self._email_services.verify_email(user.verification_code)
         
+        return user
+
+
+    
+         
+    
        
 
                 

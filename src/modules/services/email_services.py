@@ -5,8 +5,13 @@ import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from ..models.user import User
+from ..repositories.users_repository import UsersRepository
+from fastapi import  HTTPException
 
-class EmailServices:
+class EmailServices():
+    def __init__(self):
+        self._users_repository=UsersRepository()
+        
     def send_email(self, user:User):
         SMTP_SERVER =os.getenv('SMTP_SERVER')
         SMTP_PORT =465
@@ -28,7 +33,22 @@ class EmailServices:
         server.sendmail(EMAIL_SENDER, EMAIL_RECEIVER, message.as_string())
         server.quit()
     
+    #revisar
+    def verify_email(self, token:str):
+        user=self._users_repository.get_by_verification_token(token)
+        if user is not None:
+            user.is_verified=True
+            self._users_repository.update(user.id,user)
+            return {"message": "¡Cuenta verificada correctamente!"}
+        else:
+
+            return {"message": "El token no es válido o ha expirado."}
+        
+      
+ 
     
-    def verify_email(self):
-        pass
+        
+        
+        
+        
     
