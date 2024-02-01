@@ -5,7 +5,7 @@ from typing import Annotated
 from fastapi import Depends, Security
 from ..services.authentication_users_services import AuthenticationUsersServices
 from ..services.token_services import TokenServices
-from ..services.registration_users_services import UsersServices
+from ..services.registration_users_services import Registration_UsersServices
 
 
 
@@ -13,13 +13,12 @@ class UsersController():
     def __init__(self):
         self._users_repository=UsersRepository()
         self._authentication_users_services=AuthenticationUsersServices()
-        self._users_services=UsersServices()
+        self._registration_users_services=Registration_UsersServices()
 
+    
         
-        #self._registration_handler=Registration_Handler
-        
-    def create(self, user:User):                 
-        return self._users_services.handle_account_registration(user)
+    def create(self, user:User):
+        return self._registration_users_services.handle_account_registration(user)
       
 
     
@@ -61,3 +60,6 @@ class UsersController():
 
     def read_users(self, offset:int, limit:int):
         return self._users_repository.read_users(offset, limit)
+    
+    def verify_user_account(self, token:str):
+        return self._users_repository.get_by_verification_token(token)

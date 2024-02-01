@@ -14,6 +14,13 @@ class UsersRepository:
         self._password_services=PasswordServices()
 
 
+    def get_by_verification_token(self, token:str):
+        with Session(self._db_services.get_engine()) as session:
+            statement=select(User).where(User.verification_code == token)
+            result=session.exec(statement)
+            user=result.one_or_none()
+        return user
+            
      
     def create(self, item:User):
         hashed_password=self._password_services.hash_password(item.password)

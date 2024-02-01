@@ -2,6 +2,7 @@ from ..repositories.users_repository import UsersRepository
 from fastapi import HTTPException, status
 from fastapi.security import SecurityScopes
 
+
 class UserValidationServices:
         @staticmethod
         def check_user_validity( username:str):
@@ -11,9 +12,14 @@ class UserValidationServices:
                             status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="Incorrect username or password",
                             headers={"WWW-Authenticate": "Bearer"},)
-                
+            
             if user.disabled:
                 raise HTTPException(status_code=400, detail="Inactive user")
+            
+            #if user.is_verified is False:
+             #   raise HTTPException(status_code=400, detail="Email account not verified ")
+
+                
             return user
 
         
