@@ -34,8 +34,8 @@ class EmailServices():
         server.quit()
     
 
-    def verify_email(self, user:User):
-        user=self._users_repository.get_by_verification_token(user.verification_code)
+    def verify_email(self, token:str):
+        user=self._users_repository.get_by_verification_token(token)
         if user is not None:
             user.is_verified=True
             self._users_repository.update(user.id,user)

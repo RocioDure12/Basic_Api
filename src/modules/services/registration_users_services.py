@@ -45,11 +45,6 @@ class Registration_UsersServices:
         return new_user
           
    
-    def verify_account(self,user:User):
-        self._email_services.send_email(user.email, user.verification_code)
-        self._email_services.verify_email(user.verification_code)
-        
-        return user
 
 
     

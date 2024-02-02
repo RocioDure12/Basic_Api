@@ -62,5 +62,5 @@ class UsersController():
     def read_users(self, offset:int, limit:int):
         return self._users_repository.read_users(offset, limit)
     
-    def verify_user_account(self,user:User):
-        return self._registration_users_services.verify_account(user.email, user.verification_code)
+    def verify_user_account(self,token:str):
+        return self._email_services.verify_email(token)
