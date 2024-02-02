@@ -33,17 +33,14 @@ class EmailServices():
         server.sendmail(EMAIL_SENDER, EMAIL_RECEIVER, message.as_string())
         server.quit()
     
-    #revisar
-    def verify_email(self, token:str):
-        user=self._users_repository.get_by_verification_token(token)
+
+    def verify_email(self, user:User):
+        user=self._users_repository.get_by_verification_token(user.verification_code)
         if user is not None:
             user.is_verified=True
             self._users_repository.update(user.id,user)
-            return {"message": "¡Cuenta verificada correctamente!"}
-        else:
-
-            return {"message": "El token no es válido o ha expirado."}
-        
+        return user
+      
       
  
     

@@ -56,12 +56,17 @@ class UsersRepository:
         return user        
         
     def update(self,id:int,update_item:User):
-        hashed_password=self._password_services.hash_password(update_item.password)
-        update_item.password=hashed_password
+        
         with Session(self._db_services.get_engine()) as session:
             statement=select(User).where(User.id == id)
             result=session.exec(statement)
             user=result.one()
+            
+            if user:
+                if update_item.password != user.password:
+                    hashed_password=self._password_services.hash_password(update_item.password)
+                    update_item.password=hashed_password
+                    
             user.name=update_item.name
             user.surname=update_item.surname
             user.email=update_item.email
