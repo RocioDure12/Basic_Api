@@ -74,6 +74,7 @@ class UsersRepository:
             user.password=update_item.password
             user.disabled=update_item.disabled
             user.role_id=update_item.role_id
+            user.is_verified=update_item.is_verified
             session.add(user)
             session.commit()
             session.refresh(user)
