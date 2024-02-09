@@ -2,7 +2,7 @@
 FROM python:3.9-slim
 
 # Establece el directorio de trabajo en /app
-WORKDIR /basic-api
+WORKDIR /app
 
 # Copia el archivo de requisitos al directorio de trabajo
 COPY requirements.txt .
