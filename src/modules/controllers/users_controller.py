@@ -8,7 +8,7 @@ from ..services.token_services import TokenServices
 from ..services.registration_users_services import Registration_UsersServices
 from ..services.email_services import EmailServices
 
-
+from fastapi import Cookie
 
 class UsersController():
     def __init__(self):
