@@ -52,30 +52,31 @@ class AuthenticationUsersServices():
         response.set_cookie(
             key=key,
             value=token,
-            domain="http://localhost:5173",
+            
+            domain="localhost",
             path="/",
+            
             max_age=None,
             secure=True,
-            httponly=True,
-            samesite="lax"
+            httponly=True,      
+            samesite="lax",
         )
     
     def create_response_with_cookies(self, auth_response:AuthResponse)->Response:
-        response=Response(status_code=status.HTTP_200_OK)
+        response=Response(status_code=status.HTTP_302_FOUND)
         self.set_cookie(response,"access_token", auth_response.access_token)
         self.set_cookie(response,"refresh_token", auth_response.refresh_token)
+        response.headers["Location"] = "http://localhost:5173/home"
         return response
-     
+   
+        
     def get_cookie(self,request:Request):
+        
         cookie= request.cookies.get("cookie")
         if cookie:
             return{"message:"f"Cookie value is {cookie}"}
         else:
             return{"message":"No cookie found"}
-        
-
-    
-            
         
     
     
