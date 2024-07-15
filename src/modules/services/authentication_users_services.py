@@ -8,11 +8,10 @@ from ..models.auth_response import AuthResponse
 from ..services.user_validation_services import UserValidationServices
 from ..services.token_services import TokenServices
 from fastapi.responses import JSONResponse
+from ..models.oauth2_password_bearer_with_cookie import OAuth2PasswordBearerWithCookie
 
 
-
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl="login")
 
 class AuthenticationUsersServices():
     _password_services=PasswordServices()
@@ -51,11 +50,9 @@ class AuthenticationUsersServices():
     def set_cookie(self,response:Response,key:str,token:str):
         response.set_cookie(
             key=key,
-            value=token,
-            
+            value=f"Bearer {token}",
             domain="localhost",
             path="/",
-            
             max_age=None,
             secure=True,
             httponly=True,      
@@ -66,17 +63,23 @@ class AuthenticationUsersServices():
         response=Response(status_code=status.HTTP_302_FOUND)
         self.set_cookie(response,"access_token", auth_response.access_token)
         self.set_cookie(response,"refresh_token", auth_response.refresh_token)
-        response.headers["Location"] = "http://localhost:5173/home"
+        response.headers["Location"] = "http://localhost:5173/"
         return response
    
         
-    def get_cookie(self,request:Request):
+    def get_authentication_cookies(self,request:Request):
         
-        cookie= request.cookies.get("cookie")
-        if cookie:
-            return{"message:"f"Cookie value is {cookie}"}
+        access_token= request.cookies.get("access_token")
+        refresh_token=request.cookies.get("refresh_token")
+        if access_token and refresh_token:
+            return {"message": f"Access token is {access_token}, Refresh token is {refresh_token}"}
+        elif access_token:
+            return {"message": f"Access token is {access_token}, No refresh token found"}
+        elif refresh_token:
+            return {"message": f"No access token found, Refresh token is {refresh_token}"}
         else:
-            return{"message":"No cookie found"}
+            return {"message": "No cookies found"}
+        
         
     
     

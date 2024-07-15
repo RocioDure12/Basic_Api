@@ -8,6 +8,8 @@ router=APIRouter(
 )
 
 controller=UsersController()
+router.add_api_route('/cookies', controller.get_auth_cookies, methods=['GET'])
+
 router.add_api_route('/login', controller.login_user, methods=['POST'])
 router.add_api_route('/',controller.create, methods=['POST'])
 #router.add_api_route('/',controller.read, methods=['GET'])

@@ -2,7 +2,7 @@ from ..models.user import User
 from ..repositories.users_repository import UsersRepository
 from fastapi.security import  OAuth2PasswordRequestForm
 from typing import Annotated
-from fastapi import Depends, Security
+from fastapi import Depends, Security, Request
 from ..services.authentication_users_services import AuthenticationUsersServices
 from ..services.token_services import TokenServices
 from ..services.registration_users_services import Registration_UsersServices
@@ -39,12 +39,12 @@ class UsersController():
     
     def read_me(self, user:Annotated[User,
                                      Security(TokenServices.check_access_token,
-                                              scopes=['users:read_me'])]):
+                                              scopes=[])]):
         return user
     
     def update(self, id:int, update_item:Annotated[User,
                                      Security(TokenServices.check_access_token,
-                                              scopes=['users: update'])]):
+                                              scopes=['users:update'])]):
         
         return self._users_repository.update(id, update_item)
     
@@ -52,6 +52,7 @@ class UsersController():
         return self._users_repository.delete(id)
 
     def login_user(self,form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+
         return self._authentication_users_services.handle_authentication(form_data.username, form_data.password)
     
     def refresh_access_token(self,user:Annotated[User,
@@ -64,3 +65,9 @@ class UsersController():
     
     def verify_user_account(self,token:str):
         return self._email_services.verify_email(token)
+    
+    def get_auth_cookies(self, 
+                         user:Annotated[User,
+                                     Security(TokenServices.check_access_token)],
+                         request:Request):
+        return self._authentication_users_services.get_authentication_cookies(request)

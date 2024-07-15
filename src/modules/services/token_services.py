@@ -9,9 +9,10 @@ from ..models.user import User
 from datetime import datetime, timedelta
 from ..models.user import User
 import secrets
+from ..models.oauth2_password_bearer_with_cookie import OAuth2PasswordBearerWithCookie
 
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+#oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl="login")
 
 class TokenServices:
     
