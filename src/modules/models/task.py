@@ -9,6 +9,7 @@ class Task(SQLModel, table=True):
     task_name:str
     description:str
     status:bool
+    due_date:datetime
     deleted_at:Optional[datetime] = None
     created_at:datetime = Field(default_factory=datetime.utcnow,nullable=False)
     updated_at:Optional[datetime] = None

@@ -5,8 +5,6 @@ from ..models.user import User
 from typing import List
 
 
-
-
 class TasksRepository:
     def __init__(self):
         self._db_services = DbServices()
@@ -19,7 +17,7 @@ class TasksRepository:
             session.refresh(item)
         return item
     
-    def read_my_tasks(self, user_id)->[Task]:
+    def read_my_tasks(self, user_id)->Task:
         with Session(self._db_services.get_engine()) as session:
             statement=select(Task).where(Task.user_id == user_id)
             results=session.exec(statement)
