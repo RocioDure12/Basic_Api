@@ -42,6 +42,7 @@ class Registration_UsersServices:
         self.verify_user(new_user)
         new_user.verification_code=self._token_services.generate_verification_token()
         self._users_repository.create(new_user)
+        self._email_services.send_email(new_user)
         return new_user
           
    

@@ -9,6 +9,8 @@ from ..services.user_validation_services import UserValidationServices
 from ..services.token_services import TokenServices
 from fastapi.responses import JSONResponse
 from ..models.oauth2_password_bearer_with_cookie import OAuth2PasswordBearerWithCookie
+from datetime import datetime, timedelta, timezone
+
 
 
 oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl="login")
@@ -53,10 +55,11 @@ class AuthenticationUsersServices():
             value=f"Bearer {token}",
             domain="localhost",
             path="/",
-            max_age=None,
+            #max_age=None,
             secure=True,
-            httponly=True,      
+            httponly=True,   
             samesite="lax",
+            expires=datetime.now(timezone.utc)+timedelta(days=1)
         )
     
     def create_response_with_cookies(self, auth_response:AuthResponse)->Response:
@@ -79,6 +82,14 @@ class AuthenticationUsersServices():
             return {"message": f"No access token found, Refresh token is {refresh_token}"}
         else:
             return {"message": "No cookies found"}
+        
+    
+    def delete_cookies(self, response:Response):
+        response.set_cookie(key="access_token",value="", expires=0,path="/",domain="localhost")
+        response.set_cookie(key="refresh_token", value="",expires=0,path="/",domain="localhost")
+        return {"message": "Logged out"}
+        
+        
         
         
     
