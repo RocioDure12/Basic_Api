@@ -39,7 +39,9 @@ class EmailServices():
         if user is not None:
             user.is_verified=True
             self._users_repository.update(user.id,user)
+            
         return user
+   
       
       
  
