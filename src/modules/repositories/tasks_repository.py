@@ -8,6 +8,15 @@ from typing import List
 class TasksRepository:
     def __init__(self):
         self._db_services = DbServices()
+        
+    def getTaskById(self,id:int):
+        with Session(self._db_services.get_engine()) as session:
+            statement=select(Task).where(Task.id == id)
+            result=session.exec(statement)
+            task=result.one_or_none()
+        return task
+            
+    
     
     def create(self, item:Task):
       

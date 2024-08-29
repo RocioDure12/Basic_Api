@@ -14,6 +14,14 @@ class TasksController:
                                                         scopes=[])]):
         item.user_id=user.id
         return self._tasks_repository.create(item)
+
+        
+    def getTaskById(self,
+                   user:Annotated[User,
+                              Security(TokenServices.check_access_token,
+                                           scopes=[])],
+                   id):
+        return self._tasks_repository.getTaskById(id)
     
     def read_my_tasks(self,user:Annotated[User,
                                                Security(TokenServices.check_access_token,

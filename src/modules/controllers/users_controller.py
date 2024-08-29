@@ -22,7 +22,6 @@ class UsersController():
         
     def create(self, user:User):
         return self._registration_users_services.user_registration_db(user)
-      
 
     
     def read(self, user:Annotated[User,
