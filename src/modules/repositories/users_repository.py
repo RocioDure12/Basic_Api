@@ -6,8 +6,6 @@ from ..services.password_services import PasswordServices
 from sqlalchemy.orm import joinedload
 
 
-
-
 class UsersRepository:
     def __init__(self):
         self._db_services=DbServices()

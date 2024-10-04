@@ -23,7 +23,7 @@ router.add_api_route('/refresh-token', controller.refresh_access_token, methods=
 router.add_api_route('/pagination', controller.read_users, methods=['GET'],response_model=List[User])
 router.add_api_route('/{id}', controller.read_by_id, methods=['GET'])
 router.add_api_route('/verification/{token}', controller.verify_email_account, methods=['POST'])
-
+router.add_api_route('/admin', controller.create_admin, methods=['POST'])
 
 
 
