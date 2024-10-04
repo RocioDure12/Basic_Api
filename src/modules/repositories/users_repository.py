@@ -21,16 +21,28 @@ class UsersRepository:
             user=result.one_or_none()
         return user
             
-     
-    def create(self, item:User):
+    def create_admin(self, item:User):
         hashed_password=self._password_services.hash_password(item.password)
         item.password=hashed_password
+        item.role_id=1
+        item.is_verified=True
         with Session(self._db_services.get_engine()) as session: 
             session.add(item)
             session.commit()
             session.refresh(item)
-        return item
-            
+        return item    
+        
+    
+    def create(self, item:User):
+        hashed_password=self._password_services.hash_password(item.password)
+        item.password=hashed_password
+        item.role_id=2
+        with Session(self._db_services.get_engine()) as session: 
+            session.add(item)
+            session.commit()
+            session.refresh(item)
+        return item        
+        
     
     def read(self)->list[User]:
         with Session(self._db_services.get_engine()) as session:

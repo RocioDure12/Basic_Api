@@ -17,11 +17,13 @@ class UsersController():
         self._authentication_users_services=AuthenticationUsersServices()
         self._registration_users_services=Registration_UsersServices()
         self._email_services=EmailServices()
-
-    
-        
+            
     def create(self, user:User):
+   
         return self._registration_users_services.user_registration_db(user)
+    
+    def create_admin(self, user:User):
+        return self._registration_users_services._users_repository.create_admin(user)
 
     
     def read(self, user:Annotated[User,
