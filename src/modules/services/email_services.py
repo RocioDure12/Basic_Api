@@ -17,7 +17,7 @@ class EmailServices():
     def send_email(self, user: User):
         message = Mail(
             from_email='rooci_16@hotmail.com.ar',  # Asegúrate de usar un correo verificado en SendGrid
-            to_emails=user.email,  # Pasamos solo el string o lista con el email
+            to_emails=user.email,  
             subject='Sending with Twilio SendGrid is Fun',
             html_content=f'Click the following link to verify your account: http://localhost:5173/verifyemail/{user.verification_code}'
         )
