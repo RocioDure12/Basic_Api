@@ -6,34 +6,32 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from ..models.user import User
 from ..repositories.users_repository import UsersRepository
-from fastapi import  HTTPException
+from fastapi import HTTPException
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 class EmailServices():
     def __init__(self):
-        self._users_repository=UsersRepository()
+        self._users_repository = UsersRepository()
         
-    def send_email(self, user:User):
-        SMTP_SERVER =os.getenv('SMTP_SERVER')
-        SMTP_PORT =465
-        SMTP_PASSWORD=os.getenv('EMAIL_PASSWORD')
-        EMAIL_SENDER = os.getenv('EMAIL_SENDER')
-        EMAIL_RECEIVER=user.email
-        
-        
-        message=MIMEMultipart()
-        message["From"] =EMAIL_SENDER
-        message["Subject"] = "EMAIL VERIFICATION"
-        
-        body=f"Click the following link to verify your account:{user.verification_code}"
-        message.attach(MIMEText(body,"plain"))
-        
-        context=ssl.create_default_context()
-        server=smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT, context=context)
-        server.login(EMAIL_SENDER, SMTP_PASSWORD)
-        server.sendmail(EMAIL_SENDER, EMAIL_RECEIVER, message.as_string())
-        server.quit()
-    
+    def send_email(self, user: User):
+        message = Mail(
+            from_email='rooci_16@hotmail.com.ar',  # Asegúrate de usar un correo verificado en SendGrid
+            to_emails=user.email,  # Pasamos solo el string o lista con el email
+            subject='Sending with Twilio SendGrid is Fun',
+            html_content=f'Click the following link to verify your account: http://localhost:5173/verifyemail/{user.verification_code}'
+        )
+        try:
+            sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            print(f"Error: {str(e)}")
 
+
+    
     def verify_email(self, token:str):
         user=self._users_repository.get_by_verification_token(token)
         if user is not None:
