@@ -2,6 +2,7 @@ from sqlmodel import Field,Relationship, SQLModel
 from typing import Optional
 from datetime import datetime
 from typing import Optional
+from ..models.category import Category
 
 
 class Task(SQLModel, table=True):
@@ -14,6 +15,9 @@ class Task(SQLModel, table=True):
     created_at:datetime = Field(default_factory=datetime.utcnow,nullable=False)
     updated_at:Optional[datetime] = None
     user_id:Optional[int]=Field(default=None, foreign_key="user.id")
+    category_id:Optional[int]=Field(default=None, foreign_key="category.id")
+    category:Optional[Category]=Relationship()
+
   
 
 
