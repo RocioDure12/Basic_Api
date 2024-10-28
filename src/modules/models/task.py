@@ -13,6 +13,8 @@ class Task(SQLModel, table=True):
     description:str
     status:bool=Field(default=False)
     due_date:datetime
+    start_time: Optional[datetime] = Field(default=None)
+    end_time: Optional[datetime] = Field(default=None) 
     deleted_at:Optional[datetime] = None
     created_at:datetime = Field(default_factory=datetime.now,nullable=False)
     updated_at:Optional[datetime] = None
