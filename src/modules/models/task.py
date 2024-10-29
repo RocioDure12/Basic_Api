@@ -4,20 +4,17 @@ from datetime import datetime
 from typing import Optional
 from ..models.category import Category
 from ..models.subtask import Subtask
+from ...base.model import BaseModel
 
 
-class Task(SQLModel, table=True):
+class Task(BaseModel, table=True):
     __tablename__ ="tasks"
-    id:Optional[int]=Field(default=None, primary_key=True)
     task_name:str
     description:str
     status:bool=Field(default=False)
     due_date:datetime
     start_time: Optional[datetime] = Field(default=None)
     end_time: Optional[datetime] = Field(default=None) 
-    deleted_at:Optional[datetime] = None
-    created_at:datetime = Field(default_factory=datetime.now,nullable=False)
-    updated_at:Optional[datetime] = None
     user_id:Optional[int]=Field(default=None, foreign_key="user.id")
     category_id:Optional[int]=Field(default=None, foreign_key="category.id")
     
