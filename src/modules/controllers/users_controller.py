@@ -18,7 +18,7 @@ class UsersController():
         self._registration_users_services=Registration_UsersServices()
         self._email_services=EmailServices()
             
-    def create(self, user:User):
+    def create_user(self, user:User):
    
         return self._registration_users_services.user_registration_db(user)
     
@@ -65,8 +65,8 @@ class UsersController():
        return self._authentication_users_services.handle_refresh_access_token(user)
    
 
-    def read_users(self, offset:int, limit:int):
-        return self._users_repository.read_users(offset, limit)
+    def read_users_paginated(self, offset:int, limit:int):
+        return self._users_repository.get_items_paginated(offset, limit)
     
     def verify_email_account(self,token:str):
         return self._email_services.verify_email(token)
