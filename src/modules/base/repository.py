@@ -9,8 +9,6 @@ T = TypeVar('T')
 class BaseRepository(ABC, Generic[T]):
     item: Type[T] 
 
-
-    
     def __init__(self):
         self._db_services=DbServices()
     
