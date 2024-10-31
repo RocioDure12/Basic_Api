@@ -40,17 +40,32 @@ class BaseRepository(ABC, Generic[T]):
         with Session(self._db_services.get_engine()) as session:
             statement=select(self.item).where(self.item.id == id)
             result=session.exec(statement)
-            item=result.one()
+            item=result.one_or_none()
             
+            if item:
+                for key, value in update_item.dict(exclude_unset=True).items():
+                    setattr(item, key, value)
+                    
+                session.add(item)
+                session.commit()
+                session.refresh(item)
+            return item
             
-            
+    
+    def delete(self, id:int):
+        with Session(self._db_services.get_engine()) as session:
+            statement=select(self.item).where(self.item.id == id)
+            result=session.exec(statement)
+            item=result.one_or_none()
+            if item:
+                session.delete(item)
+                session.commit()
         
-        pass
     
-    def delete(self):
-        pass
-    
-    def get_items_paginated(self):
-        pass
+    def get_items_paginated(self,offset:int, limit:int)->List[T]:
+        with Session(self._db_services.get_engine()) as session:
+            items = session.exec(select(self.item).offset(offset).limit(limit)).all()
+            return items
+        
     
     
