@@ -20,7 +20,7 @@ class UsersController():
             
     def create_user(self, user:User):
    
-        return self._registration_users_services.user_registration_db(user)
+        return self._registration_users_services.user_registration(user)
     
     def create_admin(self, user:User):
         return self._registration_users_services._users_repository.create_admin(user)

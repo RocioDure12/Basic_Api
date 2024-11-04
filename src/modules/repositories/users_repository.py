@@ -21,18 +21,20 @@ class UsersRepository(BaseRepository[User]):
             user=result.one_or_none()
         return user
     
-    def create_admin(self, item:User)->User:
+    def create(self, item):
         hashed_password=self._password_services.hash_password(item.password)
         item.password=hashed_password
-        item.role_id=1
-        item.is_verified=True
         return super().create(item)
     
+    def create_admin(self, item:User)->User:
+        item.role_id=1
+        item.is_verified=True
+        item.disabled=False
+        return self.create(item)
+    
     def create_user(self, item:User)->User:
-            hashed_password=self._password_services.hash_password(item.password)
-            item.password=hashed_password
             item.role_id=2
-            return super().create(item)
+            return self.create(item)
         
     def read(self)->list[User]:
         return super().read()

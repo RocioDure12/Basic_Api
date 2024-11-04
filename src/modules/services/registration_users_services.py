@@ -38,10 +38,10 @@ class Registration_UsersServices:
         
         return new_user            
         
-    def user_registration_db(self, new_user:User):
+    def user_registration(self, new_user:User):
         self.verify_user(new_user)
         new_user.verification_code=self._token_services.generate_verification_token()
-        self._users_repository.create(new_user)
+        self._users_repository.create_user(new_user)
         self._email_services.send_email(new_user)
         return new_user
           
