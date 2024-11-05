@@ -64,6 +64,15 @@ class BaseRepository(ABC, Generic[T]):
         with Session(self._db_services.get_engine()) as session:
             items = session.exec(select(self.item).offset(offset).limit(limit)).all()
             return items
+    
+    def get_items_by_user_id(self, user_id:int)->List[T]:
+        with Session(self._db_services.get_engine()) as session:
+            statement=select(self.item).where(self.item.user_id == user_id)
+            results=session.exec(statement)
+            items=results.all()
+        return items
+        
+        
         
     
     
