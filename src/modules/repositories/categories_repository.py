@@ -8,14 +8,14 @@ class CategoriesRepository(BaseRepository[Category]):
     def __init__(self):
         super().__init__()
     
-    def create(self, item):
+    def create(self, item:Category)->Category:
         return super().create(item)
     
-    def read_my_categories(self, user_id:int):
+    def read_my_categories(self, user_id:int)->List[Category]:
         return super().get_items_by_user_id(user_id)
     
-    def update(self, id, update_item):
+    def update(self, id, update_item)->Optional[Category]:
         return super().update(id, update_item)
     
-    def delete(self, id):
+    def delete(self, id)-> None:
         return super().delete(id)
