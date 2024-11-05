@@ -4,7 +4,7 @@ from repository import BaseRepository
 
 T = TypeVar("T")
 
-class Controller(ABC, Generic[T]):
+class BaseController(ABC, Generic[T]):
     item: Type[T]
     
     def __init__(self):
