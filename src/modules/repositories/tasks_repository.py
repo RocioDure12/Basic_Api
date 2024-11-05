@@ -2,64 +2,36 @@ from ..services.db_services import DbServices
 from sqlmodel import Session, SQLModel,select
 from ..models.task import Task
 from ..models.user import User
-from typing import List
+from typing import List, Type
+from ..base.repository import BaseRepository
+from ..models.task import Task
 
 
-class TasksRepository:
+class TasksRepository(BaseRepository):
+    item:Type[Task]=Task
+    
     def __init__(self):
-        self._db_services = DbServices()
+        super().__init__()
         
     def getTaskById(self,id:int):
-        with Session(self._db_services.get_engine()) as session:
-            statement=select(Task).where(Task.id == id)
-            result=session.exec(statement)
-            task=result.one_or_none()
-        return task
+        return super().read_by_id(id)
             
     
-    
     def create(self, item:Task):
+        return super().create(item)
       
-        with Session(self._db_services.get_engine()) as session:
-            session.add(item)
-            session.commit()
-            session.refresh(item)
-        return item
-    
+
     def read_my_tasks(self, user_id)->Task:
-        with Session(self._db_services.get_engine()) as session:
-            statement=select(Task).where(Task.user_id == user_id)
-            results=session.exec(statement)
-            tasks=results.all()
-        return tasks
+        return super().get_items_by_user_id(user_id)
 
     
     def update(self, id:int, update_item:Task):
-        with Session(self._db_services.get_engine()) as session:
-            statement=select(Task).where(Task.id == id)
-            result=session.exec(statement)
-            task=result.one()
-            task.task_name=update_item.task_name
-            task.description=update_item.description
-            task.status=update_item.status
-            session.add(task)
-            session.commit()
-            session.refresh(task)
-            
-        return task
+        return super().update(id, update_item)
     
     def delete(self,id:int):
-        with Session(self._db_services.get_engine()) as session:
-            statement=select(Task).where(Task.id == id)
-            result=session.exec(statement)
-            task=result.one()
-            session.delete(task)
-            session.commit()
+        return super().delete(id)
             
-    def read_tasks(self,offset:int, limit:int)->List[Task]:
-        with Session(self._db_services.get_engine()) as session:
-            tasks = session.exec(select(Task).offset(offset).limit(limit)).all()
-            return tasks
-            
+    def read_tasks_paginated(self,offset:int, limit:int)->List[Task]:
+       return super().get_items_paginated(offset, limit)
         
         
