@@ -11,31 +11,31 @@ class TasksController:
     
     def create(self,item:Task,user:Annotated[User,
                                                Security(TokenServices.check_access_token,
-                                                        scopes=[])]):
+                                                        scopes=['tasks:create'])]):
         item.user_id=user.id
         return self._tasks_repository.create(item)
 
         
-    def getTaskById(self,
+    def get_task_by_id(self,
                    user:Annotated[User,
                               Security(TokenServices.check_access_token,
-                                           scopes=[])],
+                                           scopes=['tasks:get_task_by_id'])],
                    id):
         return self._tasks_repository.getTaskById(id)
     
     def read_my_tasks(self,user:Annotated[User,
                                                Security(TokenServices.check_access_token,
-                                                        scopes=[])]):
+                                                        scopes=['tasks:read_my_tasks'])]):
         user_id=user.id
         return self._tasks_repository.read_my_tasks(user_id)
     
     def update(self,id,update_item:Task,user:Annotated[User,
                                                Security(TokenServices.check_access_token,
-                                              scopes=[])]):
+                                              scopes=['tasks:update'])]):
     
         return self._tasks_repository.update( id,update_item)
     
     def delete(self, id,user:Annotated[User,
                                        Security(TokenServices.check_access_token,
-                                       scopes=[])]):
+                                       scopes=['tasks:delete'])]):
         return self._tasks_repository.delete(id)

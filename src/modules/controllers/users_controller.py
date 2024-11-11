@@ -22,7 +22,9 @@ class UsersController():
    
         return self._registration_users_services.user_registration(user)
     
-    def create_admin(self, user:User):
+    def create_admin(self, user:Annotated[User,
+                                  Security(TokenServices.check_access_token,
+                                           scopes=['users:create_admin'])]):
         return self._registration_users_services._users_repository.create_admin(user)
 
     
@@ -41,16 +43,18 @@ class UsersController():
     
     def read_me(self, user:Annotated[User,
                                      Security(TokenServices.check_access_token,
-                                              scopes=[])]):
+                                              scopes=['users:read_me'])]):
         return user
     
-    def update(self, id:int, update_item:Annotated[User,
+    def update(self, id:int, update_item:User,user:Annotated[User,
                                      Security(TokenServices.check_access_token,
                                               scopes=['users:update'])]):
         
         return self._users_repository.update(id, update_item)
     
-    def delete(self,id:int):
+    def delete(self,id:int,user:Annotated[User,
+                                     Security(TokenServices.check_access_token,
+                                              scopes=['users:delete'])]):
         return self._users_repository.delete(id)
 
     def login_user(self,form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
