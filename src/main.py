@@ -6,6 +6,8 @@ from sqlmodel import Field, SQLModel, Session
 from modules.routers.users_router import router as users_router
 from modules.routers.roles_router import router as roles_router
 from modules.routers.tasks_router import router as tasks_router
+from modules.routers.categories_router import router as categories_router
+from modules.routers.subtasks_router  import router as subtasks_router
 from modules.models.user import User
 from modules.services.db_services import DbServices
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,6 +17,8 @@ app = FastAPI()
 app.include_router(users_router)
 app.include_router(roles_router)
 app.include_router(tasks_router)
+app.include_router(categories_router)
+app.include_router(subtasks_router)
 db=DbServices()
 
 origins = [

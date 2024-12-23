@@ -13,6 +13,7 @@ class CategoriesController():
     def create(self, item:Category, user:Annotated[User,
                                   Security(TokenServices.check_access_token,
                                            scopes=['categories:create'])]):
+        item.user_id=user.id
         return self.categories_repository.create(item)
     
     def read_my_categories(self, id:int,user:Annotated[User,
