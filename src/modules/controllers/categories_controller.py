@@ -16,10 +16,11 @@ class CategoriesController():
         item.user_id=user.id
         return self.categories_repository.create(item)
     
-    def read_my_categories(self, id:int,user:Annotated[User,
+    def read_my_categories(self,user:Annotated[User,
                                   Security(TokenServices.check_access_token,
                                            scopes=['categories:read_my_categories'])]):
-        return self.categories_repository.read_my_categories(id)
+        user_id=user.id
+        return self.categories_repository.read_my_categories(user_id)
     
     def update(self, update_item:Category, id:int,user:Annotated[User,
                                   Security(TokenServices.check_access_token,

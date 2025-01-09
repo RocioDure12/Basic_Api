@@ -44,7 +44,16 @@ class UsersController():
     def read_me(self, user:Annotated[User,
                                      Security(TokenServices.check_access_token,
                                               scopes=['users:read_me'])]):
-        return user
+        return {
+            
+                "id": user.id,
+                "name": user.name,
+                "surname": user.surname,
+                "email": user.email,
+                "username": user.username,
+                "role": user.role.name  
+}
+
     
     def update(self, id:int, update_item:User,user:Annotated[User,
                                      Security(TokenServices.check_access_token,

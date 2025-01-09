@@ -21,7 +21,7 @@ class TasksRepository(BaseRepository):
         return super().create(item)
       
 
-    def read_my_tasks(self, user_id)->Task:
+    def read_my_tasks(self, user_id)->List[Task]:
         return super().get_items_by_user_id(user_id)
 
     
