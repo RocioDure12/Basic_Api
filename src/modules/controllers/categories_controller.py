@@ -22,6 +22,11 @@ class CategoriesController():
         user_id=user.id
         return self.categories_repository.read_my_categories(user_id)
     
+    def get_categories_count(self,user:Annotated[User,
+                                  Security(TokenServices.check_access_token,
+                                           scopes=['categories:get_categories_count'])]):
+        return self.categories_repository.get_categories_count(user.id)
+    
     def update(self, update_item:Category, id:int,user:Annotated[User,
                                   Security(TokenServices.check_access_token,
                                            scopes=['categories:update'])]):

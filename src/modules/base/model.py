@@ -4,7 +4,7 @@ from sqlmodel import Field, SQLModel,Column,Date
 from sqlalchemy import BigInteger,Integer
 from abc import ABC, abstractmethod
 
-# primary_key=True,
+# Modelo base con campos comunes para otras tablas
 
 class BaseModel(SQLModel, table=False):
     id:Optional[int] = Field(sa_column=Column(Integer(), default=None, primary_key=True))

@@ -1,17 +1,22 @@
 from ..services.db_services import DbServices
 from typing import Generic, TypeVar, List, Optional, Type
 from abc import ABC
-from sqlmodel import Session,select
+from sqlmodel import Session,select, func
 from sqlalchemy.orm import joinedload
 
+# Tipo genérico T para trabajar con diferentes tipos de modelos en la base de datos
 T = TypeVar('T')
 
+# Clase base que proporciona operaciones CRUD para interactuar con cualquier modelo que se le pase
+# Permite realizar operaciones sobre cualquier entidad, sin necesidad de duplicar código.
 class BaseRepository(ABC, Generic[T]):
-    item: Type[T] 
+    item: Type[T] # El tipo de modelo (entidad) con el que se va a trabajar
 
     def __init__(self):
+         # Instancia del servicio de base de datos
         self._db_services=DbServices()
-    
+        
+     # Método para crear un nuevo registro en la base de datos
     def create(self, item:T)-> T:
         with Session(self._db_services.get_engine()) as session: 
             session.add(item)
@@ -19,6 +24,7 @@ class BaseRepository(ABC, Generic[T]):
             session.refresh(item)
         return item
     
+    # Método para leer todos los registros del modelo (tabla)
     def read(self)-> List[T]:
         with Session(self._db_services.get_engine()) as session:
             statement = select(self.item)
@@ -26,14 +32,23 @@ class BaseRepository(ABC, Generic[T]):
             items=results.all()
         return items
     
+    # Método para leer un registro por su id
     def read_by_id(self, id:int)-> Optional[T]:
         with Session(self._db_services.get_engine()) as session:
-            statement= select(self.item).where(self.item.id == id)
+            statement= select(self.item).where(self.item.user_id == id)
             result=session.exec(statement)
             item=result.one_or_none()
+            
         return item
+
+    def get_total_items(self, id: int) -> int:
+        with Session(self._db_services.get_engine()) as session:
+            statement = select(func.count()).where(self.item.user_id == id)
+            result = session.exec(statement).first()  # Esto debería devolver un valor entero, no una tupla
+        return result if result is not None else 0  # Retorna directamente el resultado
         
-    
+
+    # Método para actualizar un registro existente por su id
     def update(self,id:int,update_item:T)-> Optional[T]:
         with Session(self._db_services.get_engine()) as session:
             statement=select(self.item).where(self.item.id == id)

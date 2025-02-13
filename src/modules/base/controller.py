@@ -3,7 +3,7 @@ from abc import ABC
 from repository import BaseRepository
 
 T = TypeVar("T")
-
+#Esta clase actua como un intermediario entre las vistas o (solicitudes del cliente)y los repositorios
 class BaseController(ABC, Generic[T]):
     item: Type[T]
     
