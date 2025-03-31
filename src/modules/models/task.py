@@ -10,9 +10,9 @@ from ..base.model import BaseModel
 class Task(BaseModel, table=True):
     __tablename__ ="tasks"
     task_name:str
-    description:str
+    description:Optional[str] = None 
     status:bool=Field(default=False)
-    due_date:date
+    due_date:datetime
     start_time: Optional[time] = Field(default=None)
     end_time: Optional[time] = Field(default=None) 
     user_id:Optional[int]=Field(default=None, foreign_key="users.id")
