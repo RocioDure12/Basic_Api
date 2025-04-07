@@ -13,10 +13,14 @@ class TasksRepository(BaseRepository):
     def __init__(self):
         super().__init__()
         
-    def getTaskById(self,id:int):
-        return super().read_by_id(id)
+    def get_task_by_id(self,id:int):
+        with Session(self._db_services.get_engine()) as session:
+            statement=select(self.item).where(self.item.id == id)
+            result=session.exec(statement)
+            task=result.one_or_none()
+        return task
             
-    
+            
     def create(self, item:Task):
         return super().create(item)
       

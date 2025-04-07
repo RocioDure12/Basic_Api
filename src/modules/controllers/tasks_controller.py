@@ -22,7 +22,7 @@ class TasksController:
                               Security(TokenServices.check_access_token,
                                            scopes=['tasks:get_task_by_id'])],
                    id):
-        return self._tasks_repository.getTaskById(id)
+        return self._tasks_repository.get_task_by_id(id)
     
     def read_my_tasks(self,user:Annotated[User,
                                                Security(TokenServices.check_access_token,
