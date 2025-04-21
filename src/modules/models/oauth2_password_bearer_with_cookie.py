@@ -13,7 +13,7 @@ from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
 
 class OAuth2PasswordBearerWithCookie(OAuth2PasswordBearer):
     """
-    OAuth2 flow for authentication using a bearer token obtained with a password.
+    OAuth2 flow for authentication using cookies.
     An instance of it would be used as a dependency.
 
     Read more about it in the
@@ -22,11 +22,11 @@ class OAuth2PasswordBearerWithCookie(OAuth2PasswordBearer):
 
     def __init__(
         self,
-        tokenUrl: Annotated[
+        loginUrl: Annotated[
             str,
             Doc(
                 """
-                The URL to obtain the OAuth2 token. This would be the *path operation*
+                The URL to login. This would be the *path operation*
                 that has `OAuth2PasswordRequestForm` as a dependency.
                 """
             ),
@@ -84,10 +84,10 @@ class OAuth2PasswordBearerWithCookie(OAuth2PasswordBearer):
         if not scopes:
             scopes = {}
         flows = OAuthFlowsModel(
-            password=cast(Any, {"tokenUrl": tokenUrl, "scopes": scopes})
+            password=cast(Any, {"tokenUrl": loginUrl, "scopes": scopes})
         )
         super().__init__(
-            tokenUrl=tokenUrl,
+            tokenUrl=loginUrl,
             auto_error=auto_error,
             description=description,
             scheme_name=scheme_name,

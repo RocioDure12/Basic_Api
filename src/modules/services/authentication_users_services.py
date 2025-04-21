@@ -12,9 +12,6 @@ from ..models.oauth2_password_bearer_with_cookie import OAuth2PasswordBearerWith
 from datetime import datetime, timedelta, timezone
 
 
-
-oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl="login")
-
 class AuthenticationUsersServices():
     _password_services=PasswordServices()
     _users_repository=UsersRepository()

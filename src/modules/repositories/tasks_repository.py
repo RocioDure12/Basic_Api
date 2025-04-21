@@ -35,7 +35,7 @@ class TasksRepository(BaseRepository):
     def delete(self,id:int):
         return super().delete(id)
             
-    def read_tasks_paginated(self,offset:int, limit:int)->List[Task]:
-       return super().get_items_paginated(offset, limit)
+    def tasks_paginated(self,limit:int, offset:int)->List[Task]:
+       return super().get_items_paginated(limit,offset)
         
         

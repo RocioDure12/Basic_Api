@@ -12,7 +12,8 @@ import secrets
 from ..models.oauth2_password_bearer_with_cookie import OAuth2PasswordBearerWithCookie
 
 #oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
-oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl="login")
+# TODO: cargar desde el .env
+oauth2_scheme = OAuth2PasswordBearerWithCookie(loginUrl="users/login")
 
 class TokenServices:
     
