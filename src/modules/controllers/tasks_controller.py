@@ -30,11 +30,11 @@ class TasksController:
         user_id=user.id
         return self._tasks_repository.read_my_tasks(user_id)
     
-    def tasks_paginated(self,limit, offset,user:Annotated[User,
-                                               Security(TokenServices.check_access_token,
-                                              scopes=['tasks:tasks_paginated'])]):
+    
+    
+    def read_tasks_paginated(self, offset,limit):
         
-        return self._tasks_repository.tasks_paginated(limit, offset)
+        return self._tasks_repository.read_tasks_paginated(offset, limit)
     
     def update(self,id,update_item:Task,user:Annotated[User,
                                                Security(TokenServices.check_access_token,

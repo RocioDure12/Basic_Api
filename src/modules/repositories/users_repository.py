@@ -55,6 +55,6 @@ class UsersRepository(BaseRepository[User]):
     def delete(self, id:int) ->None:
          return super().delete(id)
     
-    def get_items_paginated(self, offset, limit)->List[User]:
+    def get_users_paginated(self, offset, limit)->List[User]:
          return super().get_items_paginated(offset, limit)
     

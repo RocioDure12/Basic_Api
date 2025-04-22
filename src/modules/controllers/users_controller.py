@@ -79,7 +79,7 @@ class UsersController():
    
 
     def read_users_paginated(self, offset:int, limit:int):
-        return self._users_repository.get_items_paginated(offset, limit)
+        return self._users_repository.get_users_paginated(offset, limit)
     
     def verify_email_account(self,token:str):
         return self._email_services.verify_email(token)
