@@ -1,5 +1,5 @@
 from ..services.db_services import DbServices
-from sqlmodel import Session, SQLModel,select
+from sqlmodel import Date, Session, SQLModel,select
 from ..models.task import Task
 from ..models.user import User
 from typing import List, Type
@@ -35,7 +35,15 @@ class TasksRepository(BaseRepository):
     def delete(self,id:int):
         return super().delete(id)
             
-    def tasks_paginated(self,limit:int, offset:int)->List[Task]:
-       return super().get_items_paginated(limit,offset)
+    def read_tasks_paginated(self, offset:int,limit:int)->List[Task]:
+       return super().get_items_paginated(offset,limit)
+   
+   
+    def filter_tasks_by_date(self, date:str, offset:int, limit:int)->List[Task]:
+        with Session(self._db_services.get_engine()) as sesion:
+            statement= select(self.item).where(self.item.due_date == date)
+        return
+   
+
         
         
