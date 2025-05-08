@@ -32,9 +32,14 @@ class TasksController:
     
     
     
-    def read_tasks_paginated(self, offset,limit):
+    def read_tasks_paginated(self):
         
-        return self._tasks_repository.read_tasks_paginated(offset, limit)
+        #return self._tasks_repository.read_my_tasks()
+        count, items= self._tasks_repository.read_tasks_paginated(0, 2, '2025-04-30 10:39:00')
+        return {
+            "items":items,
+            "total":count
+        }
     
     def update(self,id,update_item:Task,user:Annotated[User,
                                                Security(TokenServices.check_access_token,
