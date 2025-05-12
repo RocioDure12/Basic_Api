@@ -40,6 +40,9 @@ class TasksController:
             "items":items,
             "total":count
         }
+        
+    def calculate_percentage_tasks_completed(self)->int:
+        return self._tasks_repository.calculate_percentage_tasks_completed()
     
     def update(self,id,update_item:Task,user:Annotated[User,
                                                Security(TokenServices.check_access_token,

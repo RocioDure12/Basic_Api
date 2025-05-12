@@ -34,6 +34,37 @@ class TasksRepository(BaseRepository):
 
     def delete(self, id: int):
         return super().delete(id)
+    
+
+    def calculate_percentage_tasks_completed(self) -> int:
+        today = datetime.date.today()
+
+        with Session(self._db_services.get_engine()) as session:
+            total_stmt = select(func.count()).select_from(self.item).where(
+                func.date(self.item.due_date) == today
+            )
+            completed_stmt = select(func.count()).select_from(self.item).where(
+                func.date(self.item.due_date) == today,
+                self.item.status == True
+            )
+
+            total = session.exec(total_stmt).one()
+            print(total)
+            completed = session.exec(completed_stmt).one()
+            print(completed)
+
+        total_count = total
+        completed_count = completed
+
+        if total_count == 0:
+            return 0
+
+        return round((completed_count / total_count) * 100)
+
+        
+        
+        
+
 
     '''
     Utilizo métodos protegidos (los que empiezan con _) porque no se debería poder acceder
@@ -75,7 +106,7 @@ class TasksRepository(BaseRepository):
             total = session.exec(count_statement).scalar()
 
         return {
-            "items": [TaskOut.from_orm(task).dict() for task in tasks],
+            "items": [(task).dict() for task in tasks],
             "total": total
         }
 
