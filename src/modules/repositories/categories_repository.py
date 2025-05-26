@@ -3,12 +3,15 @@ from ..models.category import Category
 from ..base.repository import BaseRepository
 import os
 from sqlmodel import select, func, Session
+from dotenv import load_dotenv
+load_dotenv()
 
 
 
 class CategoriesRepository(BaseRepository[Category]):
     item:Type[Category]=Category
-    max_categories=int(os.getenv('MAX_CATEGORIES'))
+    #max_categories=int(os.getenv('MAX_CATEGORIES'))
+    max_categories=15
     
     def __init__(self):
         super().__init__()
