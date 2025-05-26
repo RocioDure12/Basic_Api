@@ -19,8 +19,14 @@ class UsersController():
         self._email_services=EmailServices()
             
     def create_user(self, user:User):
-   
-        return self._registration_users_services.user_registration(user)
+        created_user=self._registration_users_services.user_registration(user)
+        return{
+            "id": created_user.id,
+            "name": created_user.name,
+            "email": created_user.email,
+
+        }
+
     
     def create_admin(self, user:Annotated[User,
                                   Security(TokenServices.check_access_token,
