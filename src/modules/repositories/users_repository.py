@@ -4,6 +4,7 @@ from typing import List, Type, Optional
 from ..services.password_services import PasswordServices
 from sqlalchemy.orm import joinedload
 from ..base.repository import BaseRepository
+from loguru import logger
 
 class UsersRepository(BaseRepository[User]):
     item:Type[User]=User
@@ -21,17 +22,20 @@ class UsersRepository(BaseRepository[User]):
         return user
     
     def create(self, item):
+        logger.debug("Creating user")
         hashed_password=self._password_services.hash_password(item.password)
         item.password=hashed_password
         return super().create(item)
     
     def create_admin(self, item:User)->User:
+        logger.debug("Creating admin user")
         item.role_id=1
         item.is_verified=True
         item.disabled=False
         return self.create(item)
     
     def create_user(self, item:User)->User:
+            logger.debug("Creating user with role id 2")
             item.role_id=2
             return self.create(item)
         
