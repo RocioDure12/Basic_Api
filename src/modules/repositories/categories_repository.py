@@ -36,6 +36,7 @@ class CategoriesRepository(BaseRepository[Category]):
         return super().delete(id)
 
 #CORREGIR ESTE METODO PORQUE NO FUNCIONA BIEN
+#
     def count_categories(self, user_id: int) -> int:
         with Session(self._db_services.get_engine()) as session:
             statement = select(func.count(Category.id)).where(Category.user_id == user_id)
