@@ -45,7 +45,7 @@ class EmailServices():
         logger.debug(msg)
 
         with  smtplib.SMTP_SSL('smtp.sendgrid.net') as smtp:
-            smtp.login('apikey', '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')
+            smtp.login('apikey', os.getenv("API_KEY_SEND_GRID"))
             logger.debug('Sending email')
             reply = smtp.sendmail(msg['From'], msg['To'], msg.as_string())
             logger.debug('Reply',reply)
