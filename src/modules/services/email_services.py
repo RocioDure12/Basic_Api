@@ -36,7 +36,7 @@ class EmailServices():
         """
 
         # TODO: Refactorizar urgente. Utilizar libreria de sendgrid. https://pypi.org/project/sendgrid/1.6.22/
-        # 24d5e58e8c52700b1da591e6c5322f97-us2
+
         msg = EmailMessage()
         msg.set_content(text_content)
         msg['From'] = 'taskplannerapp@hotmail.com'
