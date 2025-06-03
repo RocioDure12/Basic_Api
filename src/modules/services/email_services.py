@@ -1,36 +1,24 @@
-from mailersend import emails
 from dotenv import load_dotenv
 import os
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
 from ..models.user import User
 from ..repositories.users_repository import UsersRepository
+import smtplib
+from email.message import EmailMessage
+from loguru import logger
+
 
 load_dotenv()
 
 class EmailServices():
     def __init__(self):
         self._users_repository = UsersRepository()
-        self.mailer = emails.NewEmail(os.getenv('MAILERSEND_API_KEY'))
 
     def send_email(self, user: User):
-        mail_body = {}
-
-        mail_from = {
-            "name": "TaskPlanner App",
-            "email": "taskplannerapp@hotmail.com",  
-        }
-
-        recipients = [
-            {
-                "name": user.name if user.name else "User",
-                "email": user.email,
-            }
-        ]
-
-        reply_to = {
-            "name": "TaskPlanner Support",
-            "email": "taskplannerapp@hotmail.com",  #
-        }
-
+        logger.debug('Sending email')
+        logger.debug('Preparing message')
+        # Contenido del correo
         subject = "Verify your TaskPlanner account"
         html_content = f"""
             <p>Hello {user.name if user.name else ''},</p>
@@ -40,27 +28,44 @@ class EmailServices():
             </a>
             <p>If you did not request this, please ignore this email.</p>
         """
-        plaintext_content = f"""
+        text_content = f"""
             Hello {user.name if user.name else ''},
             Click the following link to verify your account:
             http://localhost:5173/verifyemail/{user.verification_code}
             If you did not request this, please ignore this email.
         """
 
-        # Configurar el correo
-        self.mailer.set_mail_from(mail_from, mail_body)
-        self.mailer.set_mail_to(recipients, mail_body)
-        self.mailer.set_subject(subject, mail_body)
-        self.mailer.set_html_content(html_content, mail_body)
-        self.mailer.set_plaintext_content(plaintext_content, mail_body)
-        self.mailer.set_reply_to(reply_to, mail_body)
+        # TODO: Refactorizar urgente. Utilizar libreria de sendgrid. https://pypi.org/project/sendgrid/1.6.22/
+        # 24d5e58e8c52700b1da591e6c5322f97-us2
+        msg = EmailMessage()
+        msg.set_content(text_content)
+        msg['From'] = 'taskplannerapp@hotmail.com'
+        msg['To'] =  user.email
+        msg['Subject'] = subject
+        logger.debug(msg)
 
-        # Enviar correo
+        with  smtplib.SMTP_SSL('smtp.sendgrid.net') as smtp:
+            smtp.login('apikey', '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')
+            logger.debug('Sending email')
+            reply = smtp.sendmail(msg['From'], msg['To'], msg.as_string())
+            logger.debug('Reply',reply)
+        logger.debug('Email sent')
+
+        '''
+        send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+            to=[{"email": user.email, "name": user.name or "User"}],
+            sender={"name": self.sender_name, "email": self.sender_email},
+            subject=subject,
+            html_content=html_content,
+            text_content=text_content
+        )
+
         try:
-            response = self.mailer.send(mail_body)
-            print(f"Email sent! Status: {response['status_code']}, Data: {response['data']}")
-        except Exception as e:
-            print(f"Error sending email: {str(e)}")
+            response = self.api_instance.send_transac_email(send_smtp_email)
+            print(f"Email sent successfully to {user.email}: {response}")
+        except ApiException as e:
+            print(f"Error sending email: {e}")
+        '''
 
     def verify_email(self, token: str):
         user = self._users_repository.get_by_verification_token(token)
@@ -68,12 +73,3 @@ class EmailServices():
             user.is_verified = True
             self._users_repository.update(user.id, user)
         return user
-
-      
- 
-    
-        
-        
-        
-        
-    

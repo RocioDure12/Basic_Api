@@ -10,17 +10,17 @@ load_dotenv()
 
 class CategoriesRepository(BaseRepository[Category]):
     item:Type[Category]=Category
-    #max_categories=int(os.getenv('MAX_CATEGORIES'))
-    max_categories=15
+    max_categories=int(os.getenv('MAX_CATEGORIES'))
+ 
     
     def __init__(self):
         super().__init__()
 
 
     def create(self, item:Category)->Category:
-        current_count=self.count_categories(item.user_id)
-        if current_count >= self.max_categories:
-            raise ValueError("The maximum number of allowed categories has been reached.")
+        #current_count=self.count_categories(item.user_id)
+        #if current_count >= self.max_categories:
+         # //  raise ValueError("The maximum number of allowed categories has been reached.")
         
         return super().create(item)
     
@@ -35,11 +35,13 @@ class CategoriesRepository(BaseRepository[Category]):
     def delete(self, id)-> None:
         return super().delete(id)
 
-
+#CORREGIR ESTE METODO PORQUE NO FUNCIONA BIEN
     def count_categories(self, user_id: int) -> int:
         with Session(self._db_services.get_engine()) as session:
-            statement = select(func.count()).where(Category.user_id == user_id)
-            return session.exec(statement).scalar_one()
+            statement = select(func.count(Category.id)).where(Category.user_id == user_id)
+            result= session.exec(statement)
+            count=result.scalar()
+        return count if count is not None else 0
 
                 
             
