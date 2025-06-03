@@ -9,6 +9,7 @@ from email.message import EmailMessage
 from loguru import logger
 
 
+
 load_dotenv()
 
 class EmailServices():
