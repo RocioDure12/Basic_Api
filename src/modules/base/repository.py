@@ -4,6 +4,7 @@ from abc import ABC
 from sqlmodel import Session, select, func
 from sqlalchemy.orm import joinedload
 
+
 # Tipo genérico T para trabajar con diferentes tipos de modelos en la base de datos
 T = TypeVar('T')
 
@@ -100,3 +101,11 @@ class BaseRepository(ABC, Generic[T]):
     def _exec_select(self, statement):
         with Session(self._db_services.get_engine()) as session:
             return session.exec(statement).all()
+        
+
+
+    def count_items(self, user_id: int):
+        with Session(self._db_services.get_engine()) as session:
+            statement = select(func.count()).select_from(self.item).where(self.item.user_id == user_id)
+            result = session.exec(statement).first()
+            return result[0]
