@@ -54,3 +54,9 @@ class TasksController:
                                        Security(TokenServices.check_access_token,
                                        scopes=['tasks:delete'])]):
         return self._tasks_repository.delete(id)
+    
+    def count_tasks(self,user:Annotated[User,
+                                               Security(TokenServices.check_access_token,
+                                                        scopes=['tasks:count_tasks'])]):
+        user_id=user.id
+        return self._tasks_repository.count_tasks(user_id)
