@@ -103,9 +103,8 @@ class BaseRepository(ABC, Generic[T]):
             return session.exec(statement).all()
         
 
-
-    def count_items(self, user_id: int)-> int:
+    def count_items(self):
         with Session(self._db_services.get_engine()) as session:
-            statement = select(func.count()).select_from(self.item).where(self.item.user_id == user_id)
-            result = session.exec(statement).first()
-            return result[0]
+            statement = select(func.count()).select_from(self.item)
+            result = session.exec(statement).one()
+            return result if isinstance(result, int) else result[0]
