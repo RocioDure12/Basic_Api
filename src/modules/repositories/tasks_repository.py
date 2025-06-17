@@ -36,8 +36,8 @@ class TasksRepository(BaseRepository):
         return super().delete(id)
     
 
-    def count_tasks(self):
-        return super().count_items()
+    def count_tasks(self, user_id:int):
+        return super().count_items(user_id)
     
 
     def calculate_percentage_tasks_completed(self) -> int:
