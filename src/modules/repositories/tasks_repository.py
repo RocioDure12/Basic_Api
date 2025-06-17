@@ -113,5 +113,22 @@ class TasksRepository(BaseRepository):
             "items": [(task).dict() for task in tasks],
             "total": total
         }
+    
+    def get_upcoming_tasks(self, user_id:int,limit: int = 4,):
+        with Session(self._db_services.get_engine()) as session:
+            statement = (
+                select(self.item)
+                .where(
+                    self.item.user_id == user_id,
+                    self.item.due_date >= datetime.now()
+                )
+                .order_by(self.item.due_date.asc())
+                .limit(limit)
+            )
+            results = session.exec(statement).scalars().all()
+            return results
+
+    
+
 
 

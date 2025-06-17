@@ -61,3 +61,9 @@ class TasksController:
         user_id=user.id
         
         return self._tasks_repository.count_tasks(user_id)
+    
+    def get_upcoming_tasks(self, user:Annotated[User,
+                              Security(TokenServices.check_access_token,
+                                           scopes=['tasks:get_upcoming_tasks'])]):
+        user_id=user.id
+        return self.get_upcoming_tasks() 
