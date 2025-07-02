@@ -67,3 +67,9 @@ class TasksController:
                                            scopes=['tasks:get_upcoming_tasks'])]):
         user_id=user.id
         return self.get_upcoming_tasks() 
+    
+    def get_task_dates_for_calendar(self,user:Annotated[User,
+                              Security(TokenServices.check_access_token,
+                                           scopes=['tasks:get_task_dates_for_calendar'])]):
+        user_id=user.id
+        return self.get_task_dates_for_calendar()
