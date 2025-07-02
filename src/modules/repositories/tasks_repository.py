@@ -130,8 +130,8 @@ class TasksRepository(BaseRepository):
 
 
 
-    def get_task_dates_for_calendar(self, user_id:int):
-        tasks=self.read_my_tasks(user_id)
+    def get_task_dates_for_calendar(self, id:int):
+        tasks=self.read_my_tasks(id)
         dates = {task.due_date for task in tasks if task.due_date}
         print(dates)
 
