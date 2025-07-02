@@ -72,4 +72,4 @@ class TasksController:
                               Security(TokenServices.check_access_token,
                                            scopes=['tasks:get_task_dates_for_calendar'])]):
         user_id=user.id
-        return self.get_task_dates_for_calendar()
+        return self.get_task_dates_for_calendar(user_id)
