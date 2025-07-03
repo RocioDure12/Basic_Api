@@ -40,7 +40,7 @@ class TasksRepository(BaseRepository):
         return super().count_items(user_id)
     
 
-    def calculate_percentage_tasks_completed(self) -> int:
+    '''def calculate_percentage_tasks_completed(self) -> int:
         today = datetime.date.today()
 
         with Session(self._db_services.get_engine()) as session:
@@ -65,7 +65,7 @@ class TasksRepository(BaseRepository):
 
         return round((completed_count / total_count) * 100)
 
-        
+    '''
         
         
 
