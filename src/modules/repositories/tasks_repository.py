@@ -8,6 +8,7 @@ from ..models.task import Task
 import datetime
 import time
 from sqlalchemy import func
+from datetime import datetime
 
 
 class TasksRepository(BaseRepository):
@@ -125,7 +126,7 @@ class TasksRepository(BaseRepository):
                 .order_by(self.item.due_date.asc())
                 .limit(limit)
             )
-            results = session.exec(statement).scalars().all()
+            results = session.exec(statement).all()
             return results
 
 
@@ -135,7 +136,7 @@ class TasksRepository(BaseRepository):
         dates = {task.due_date for task in tasks if task.due_date}
         print(dates)
 
-        return sorted(date.isoformat() for date in dates)
+        return sorted(date.strftime('%Y-%m-%d') for date in dates)
 
 
 
