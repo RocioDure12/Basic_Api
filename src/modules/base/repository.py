@@ -3,7 +3,7 @@ from typing import Generic, TypeVar, List, Optional, Type
 from abc import ABC
 from sqlmodel import Session, select, func
 from sqlalchemy.orm import joinedload
-
+from datetime import date
 
 # Tipo genérico T para trabajar con diferentes tipos de modelos en la base de datos
 T = TypeVar('T')
@@ -76,11 +76,36 @@ class BaseRepository(ABC, Generic[T]):
                 session.delete(item)
                 session.commit()
 
-    def get_items_paginated(self, offset: int, limit: int) -> List[T]:
+    #def get_items_paginated(self, offset: int, limit: int) -> List[T]:
+     #   with Session(self._db_services.get_engine()) as session:
+      #      items = session.exec(
+       #         select(self.item).offset(offset).limit(limit)).all()
+        #    return items
+    def get_items_paginated_with_total(
+        self,
+        offset: int,
+        limit: int,
+        filters: Optional[list] = None
+    ) -> tuple[list[T], int]:
         with Session(self._db_services.get_engine()) as session:
-            items = session.exec(
-                select(self.item).offset(offset).limit(limit)).all()
-            return items
+            # 1. Armo el statement con los filtros (sin paginar)
+            base_statement = select(self.item)
+            if filters:
+                base_statement=base_statement.where(*filters)
+            
+            base_statement = base_statement.order_by(self.item.due_date.asc())
+
+            # 2. Calculo el total (sin paginar)
+            total = session.exec(
+                select(func.count()).select_from(base_statement.subquery())
+            ).one()
+
+            # 3. Aplico la paginación por separado
+            paginated_statement = base_statement.offset(offset).limit(limit)
+            items = session.exec(paginated_statement).all()
+
+            return items, total
+
 
     def get_items_by_user_id(self, user_id: int) -> List[T]:
         with Session(self._db_services.get_engine()) as session:

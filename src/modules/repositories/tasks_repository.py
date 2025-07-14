@@ -2,13 +2,14 @@ from ..services.db_services import DbServices
 from sqlmodel import Date, Session, SQLModel, select
 from ..models.task import Task
 from ..models.user import User
-from typing import List, Type
+from typing import List, Type, Optional
 from ..base.repository import BaseRepository
 from ..models.task import Task
 import datetime
 import time
 from sqlalchemy import func
 from datetime import datetime
+from datetime import date
 
 
 class TasksRepository(BaseRepository):
@@ -137,6 +138,17 @@ class TasksRepository(BaseRepository):
         print(dates)
 
         return sorted(date.strftime('%Y-%m-%d') for date in dates)
+    
+
+    
+    def get_tasks_by_user_and_date(self, user_id:int, offset:int, limit:int, date:Optional[date] = None):
+        filters=[self.item.user_id == user_id]
+
+        if date:
+           
+            filters.append(func.date(self.item.due_date) == date) # ✅ solo compara por fecha
+
+        return self.get_items_paginated_with_total(offset, limit, filters)
 
 
 

@@ -1,9 +1,11 @@
 from ..repositories.tasks_repository import TasksRepository
 from ..models.task import Task
-from typing import Annotated
+from typing import Annotated, Optional
 from ..models.user import User
 from fastapi import Security
 from ..services.token_services import TokenServices
+from datetime import date
+from fastapi import Query
 
 class TasksController:
     def __init__(self):
@@ -70,7 +72,14 @@ class TasksController:
     
     def get_task_dates_for_calendar(self,user:Annotated[User,
                               Security(TokenServices.check_access_token,
-                                           scopes=['tasks:get_task_dates_for_calendar'])]):
+                                           scopes=['tasks:get_task_dates_for_calendar'])] ):
     
         user_id=user.id
         return self._tasks_repository.get_task_dates_for_calendar(user_id)
+    
+    def get_tasks_paginated_by_user_and_date(self,user:Annotated[User,
+                              Security(TokenServices.check_access_token,
+                                           scopes=['get_tasks_paginated_by_user_and_date'])],limit:int, offset:int, date:Optional[date] = Query(None)):
+        
+        user_id=user.id
+        return self._tasks_repository.get_tasks_by_user_and_date(user_id, limit=limit, offset=offset, date=date)

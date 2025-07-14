@@ -9,7 +9,7 @@ controller=TasksController()
 router.add_api_route('/dates_for_calendar',controller.get_task_dates_for_calendar, methods=['GET'])
 
 router.add_api_route('/percentage',controller.calculate_percentage_tasks_completed, methods=['GET'])
-router.add_api_route('/pagination', controller.read_tasks_paginated, methods=['GET'])
+router.add_api_route('/pagination', controller.get_tasks_paginated_by_user_and_date, methods=['GET'])
 router.add_api_route('/count_tasks', controller.count_tasks, methods=['GET'])
 router.add_api_route('/upcoming_tasks', controller.get_upcoming_tasks, methods=['GET'])
 
