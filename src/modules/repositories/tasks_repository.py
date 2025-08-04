@@ -1,15 +1,12 @@
 from ..services.db_services import DbServices
-from sqlmodel import Date, Session, SQLModel, select
+from sqlmodel import Session, SQLModel, select
 from ..models.task import Task
 from ..models.user import User
 from typing import List, Type, Optional
 from ..base.repository import BaseRepository
-from ..models.task import Task
-import datetime
-import time
 from sqlalchemy import func
-from datetime import datetime
-from datetime import date
+from datetime import datetime, date, time
+import time as time_module 
 
 
 class TasksRepository(BaseRepository):
@@ -118,11 +115,12 @@ class TasksRepository(BaseRepository):
     
     def get_upcoming_tasks(self, user_id:int,limit: int = 4,):
         with Session(self._db_services.get_engine()) as session:
+            today = datetime.combine(datetime.today().date(), time.min)
             statement = (
                 select(self.item)
                 .where(
                     self.item.user_id == user_id,
-                    self.item.due_date >= datetime.now()
+                    self.item.due_date >= today
                 )
                 .order_by(self.item.due_date.asc())
                 .limit(limit)
