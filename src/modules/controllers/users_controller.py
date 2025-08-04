@@ -71,7 +71,6 @@ class UsersController():
     
     def logout(self, response:Response):
         return self._authentication_users_services.delete_cookies(response)
-    
     def refresh_access_token(self,user:Annotated[User,
                                      Security(TokenServices.check_refresh_token)]):
        return self._authentication_users_services.handle_refresh_access_token(user)
