@@ -18,7 +18,7 @@ class Registration_UsersServices:
                 if not user.is_verified:
                     # Reenviar email con nuevo token
                     user.verification_code = self._token_services.generate_verification_token()
-                    self._users_repository.update(user)
+                    self._users_repository.update(user.id, user)
                     self._email_services.send_email(user)
                     raise HTTPException(
                         status_code=409,
@@ -37,8 +37,11 @@ class Registration_UsersServices:
     def user_registration(self, new_user:User):
             self.verify_user(new_user)
             new_user.verification_code=self._token_services.generate_verification_token()
-            self._users_repository.create_user(new_user)
             self._email_services.send_email(new_user)
+            self._users_repository.create_user(new_user)
+           
+            
+            
             return new_user
           
         

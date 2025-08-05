@@ -1,48 +1,61 @@
+import smtplib
+from email.mime.text import MIMEText
+from ..repositories.users_repository import UsersRepository
+from ..models.user import User
 from dotenv import load_dotenv
 import os
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
-from ..models.user import User
-from ..repositories.users_repository import UsersRepository
-from loguru import logger
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 load_dotenv()
 
-class EmailServices():
+class EmailServices:
     def __init__(self):
         self._users_repository = UsersRepository()
+      
 
     def send_email(self, user: User):
-        logger.debug('Sending email using SendGrid')
+        remitente = "taskplannerapplication@gmail.com"
+        destinatario = user.email
+        contraseña_app = os.getenv("PASSWORD_EMAIL")
 
-        subject = "Verify your TaskPlanner account"
-        verification_link = f"http://localhost:5173/verifyemail/{user.verification_code}"
+        # Crear el mensaje
+        mensaje = MIMEMultipart()
+        mensaje['From'] = remitente
+        mensaje['To'] = destinatario
+        mensaje['Subject'] = "Asunto del correo"
 
-        html_content = f"""
-            <p>Hello {user.name},</p>
-            <p>Click the following link to verify your account:</p>
-            <a href="{verification_link}">{verification_link}</a>
-            <p>If you did not request this, please ignore this email.</p>
-        """
+        api_url = os.getenv("API_URL")
+        cuerpo =f'Haz clic en el siguiente enlace para verificar tu cuenta: {api_url}/verifyemail/{user.verification_code}. Si no solicitaste esto, ignora este correo'
 
-        message = Mail(
-            from_email='taskplannerapp@hotmail.com',  # este correo debe estar verificado en SendGrid
-            to_emails=user.email,
-            subject=subject,
-            html_content=html_content
-        )
+        mensaje.attach(MIMEText(cuerpo, 'html'))
+
         try:
-            sg = SendGridAPIClient(os.getenv("API_KEY_SEND_GRID"))
-            logger.debug(f"Sending message...")
-            response = sg.send(message)
-            logger.debug(f"Email sent: Status {response.status_code}")
-        except Exception as e:
-            
-            logger.error(f"Error sending email: {e}")
+            print("Enviando email a ", destinatario)
+            # Conexión con servidor SMTP Gmail usando TLS
+            servidor = smtplib.SMTP('smtp.gmail.com', 587)
+            servidor.starttls()  # Inicia TLS (seguridad)
 
+            # Login con usuario y contraseña de aplicación
+            servidor.login(remitente, contraseña_app)
+            
+            # Enviar email
+            servidor.sendmail(remitente, destinatario, mensaje.as_string())
+
+            # Cerrar conexión
+            servidor.quit()
+
+            print("Correo enviado correctamente!")
+
+        except Exception as e:
+            print(f"Error al enviar correo: {e}")
+            
+            
     def verify_email(self, token: str):
         user = self._users_repository.get_by_verification_token(token)
-        if user is not None:
+        if user:
             user.is_verified = True
+            user.disabled=False
             self._users_repository.update(user.id, user)
         return user
