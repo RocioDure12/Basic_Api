@@ -19,12 +19,14 @@ class EmailServices:
         remitente =os.getenv("EMAIL_SENDER")
         destinatario = user.email
         contraseña_app = os.getenv("PASSWORD_EMAIL")
+        subject=os.getenv("SUBJECT")
+        
 
         # Crear el mensaje
         mensaje = MIMEMultipart()
         mensaje['From'] = remitente
         mensaje['To'] = destinatario
-        mensaje['Subject'] = "Asunto del correo"
+        mensaje['Subject'] = subject
 
         api_url = os.getenv("API_URL")
         cuerpo =f'Haz clic en el siguiente enlace para verificar tu cuenta: {api_url}/verifyemail/{user.verification_code}. Si no solicitaste esto, ignora este correo'
