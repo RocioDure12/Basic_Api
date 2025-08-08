@@ -16,7 +16,7 @@ class EmailServices:
       
 
     def send_email(self, user: User):
-        remitente = "taskplannerapplication@gmail.com"
+        remitente =os.getenv("EMAIL_SENDER")
         destinatario = user.email
         contraseña_app = os.getenv("PASSWORD_EMAIL")
 
