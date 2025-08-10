@@ -5,9 +5,17 @@ from ..services.password_services import PasswordServices
 from sqlalchemy.orm import joinedload
 from ..base.repository import BaseRepository
 from loguru import logger
+import os
+from fastapi import status
+from fastapi.responses import RedirectResponse
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 class UsersRepository(BaseRepository[User]):
     item:Type[User]=User
+    api_url = os.getenv("API_URL")
     
     def __init__(self):
 
@@ -61,4 +69,17 @@ class UsersRepository(BaseRepository[User]):
     
     def get_users_paginated(self, offset, limit)->List[User]:
          return super().get_items_paginated(offset, limit)
-    
+     
+    def find_by_username_or_email(self, username: str, email: str) -> User | None:
+        with Session(self._db_services.get_engine()) as session:
+            statement = select(self.item).where(
+                (self.item.username == username) | (self.item.email == email)
+            )
+            result = session.exec(statement)
+            user = result.first()
+            if user:
+                # Aquí podés usar el usuario dentro del with, p.ej. cargar lazy relaciones si hace falta
+                return user
+            else:
+                return None
+

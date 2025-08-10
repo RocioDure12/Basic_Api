@@ -7,34 +7,67 @@ from fastapi.security import OAuth2PasswordBearer
 from ..models.auth_response import AuthResponse
 from ..services.user_validation_services import UserValidationServices
 from ..services.token_services import TokenServices
-from fastapi.responses import JSONResponse
+from fastapi.responses import RedirectResponse
 from ..models.oauth2_password_bearer_with_cookie import OAuth2PasswordBearerWithCookie
 from datetime import datetime, timedelta, timezone
+from ..services.email_services import EmailServices
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 
 class AuthenticationUsersServices():
+    api_url = os.getenv("API_URL")
     _password_services=PasswordServices()
     _users_repository=UsersRepository()
     _token_services= TokenServices()
+    _email_services=EmailServices()
     
     
     
     def authenticate_user(self, username:str, plain_password:str):
         user= UserValidationServices.check_user_validity(username)
-        if user and self._password_services.verify_password(user.password, plain_password):
-            return user
-    
+        if user is None:
+            return RedirectResponse(
+                url=f'{self.api_url}/users/login?toast=invalid_credentials',
+                status_code=status.HTTP_303_SEE_OTHER  
+            )
+        
+            
+
+        if not self._password_services.verify_password(user.password, plain_password):
+            return RedirectResponse(
+                url=f'{self.api_url}/users/login?toast=invalid_credentials',
+                status_code=status.HTTP_303_SEE_OTHER
+               
+                
+            )
+        if user.disabled:
+            return RedirectResponse(
+                url=f'{self.api_url}/users/login?toast=disabled_account',
+                status_code=status.HTTP_303_SEE_OTHER
+          
+                
+            )
+        
+        if not user.is_verified and user.role_id == 2:
+            self._email_services.send_email(user)
+            return RedirectResponse(
+                url=f'{self.api_url}/users/login?toast=email_not_verified',
+                status_code=status.HTTP_303_SEE_OTHER
+            )
+            
+        return user
+
     
     def handle_authentication(self, username, plain_password):
-        user=self.authenticate_user(username, plain_password)
-        if not user:
-            raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},)
+        user_autenticado=self.authenticate_user(username, plain_password)
         
-        access_token=self._token_services.create_access_token(user, user.role.scopes)
-        refresh_token=self._token_services.create_refresh_token(user)
+        if isinstance(user_autenticado, RedirectResponse):
+            return user_autenticado
+        
+        access_token=self._token_services.create_access_token(user_autenticado, user_autenticado.role.scopes)
+        refresh_token=self._token_services.create_refresh_token(user_autenticado)
         auth_response=AuthResponse(access_token=access_token,refresh_token=refresh_token)
         
         return self.create_response_with_cookies(auth_response)

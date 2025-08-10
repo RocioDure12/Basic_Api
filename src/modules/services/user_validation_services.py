@@ -6,22 +6,8 @@ from fastapi.security import SecurityScopes
 class UserValidationServices:
         @staticmethod
         def check_user_validity( username:str):
-            user= UsersRepository().read_by_username(username)
-            if user is None:
-                raise HTTPException(
-                            status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail="Incorrect username or password",
-                            headers={"WWW-Authenticate": "Bearer"},)
-            
-            if user.disabled:
-                raise HTTPException(status_code=400, detail="Inactive user")
-            
-            #if user.is_verified is False:
-             #   raise HTTPException(status_code=400, detail="Email account not verified ")
-
-                
-            return user
-
+            return UsersRepository().read_by_username(username)
+    
         
         @staticmethod
         def check_scopes(security_scopes:SecurityScopes,scopes):

@@ -17,8 +17,8 @@ class EmailServices:
 
     def send_email(self, user: User):
         remitente =os.getenv("EMAIL_SENDER")
-        destinatario = user.email
-        contraseña_app = os.getenv("PASSWORD_EMAIL")
+        destinatario =user.email
+        contraseña_app =os.getenv("PASSWORD_EMAIL")
         subject=os.getenv("SUBJECT")
         
 

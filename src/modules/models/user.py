@@ -12,8 +12,8 @@ class User(BaseModel,table=True):
     __tablename__ ="users"
     name:str
     surname:str
-    email:str
-    username:str
+    email:str=Field(sa_column_kwargs={"unique": True})
+    username:str=Field(sa_column_kwargs={"unique": True})
     password:str
     disabled:bool
     is_verified:bool
