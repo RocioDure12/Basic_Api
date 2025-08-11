@@ -22,8 +22,21 @@ class CategoriesRepository(BaseRepository[Category]):
         #current_count=self.count_categories(item.user_id)
         #if current_count >= self.max_categories:
          # //  raise ValueError("The maximum number of allowed categories has been reached.")
+        with Session(self._db_services.get_engine()) as session:
+            existing_category = session.exec(
+                select(Category).where(
+                    (Category.user_id == item.user_id) &
+                    (Category.category_name == item.category_name)
+                )
+            ).first()
+
+            if existing_category:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"La categoría con nombre '{item.name}' ya existe para este usuario."
+                )
         
-        return super().create(item)
+            return super().create(item)
     
     
     def read_my_categories(self, user_id:int)->List[Category]:

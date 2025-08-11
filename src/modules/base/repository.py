@@ -76,11 +76,7 @@ class BaseRepository(ABC, Generic[T]):
                 session.delete(item)
                 session.commit()
 
-    #def get_items_paginated(self, offset: int, limit: int) -> List[T]:
-     #   with Session(self._db_services.get_engine()) as session:
-      #      items = session.exec(
-       #         select(self.item).offset(offset).limit(limit)).all()
-        #    return items
+
     def get_items_paginated_with_total(
         self,
         offset: int,
@@ -114,20 +110,7 @@ class BaseRepository(ABC, Generic[T]):
             items = results.all()
         return items
     
-    def _get_statement_paginated(self, offset: int, limit: int):
-        with Session(self._db_services.get_engine()) as session:
-            statement = select(self.item).offset(offset).limit(limit)
-            return statement
-        
-    def _exec_count(self, statement):
-        with Session(self._db_services.get_engine()) as session:
-            return session.exec(select(func.count('*')).select_from(statement)).one()
     
-    def _exec_select(self, statement):
-        with Session(self._db_services.get_engine()) as session:
-            return session.exec(statement).all()
-        
-
     def count_items(self, user_id:int):
         with Session(self._db_services.get_engine()) as session:
             statement = (
