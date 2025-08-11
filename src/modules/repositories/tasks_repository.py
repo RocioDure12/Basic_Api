@@ -39,36 +39,6 @@ class TasksRepository(BaseRepository):
         return super().count_items(user_id)
     
 
-    '''def calculate_percentage_tasks_completed(self) -> int:
-        today = datetime.date.today()
-
-        with Session(self._db_services.get_engine()) as session:
-            total_stmt = select(func.count()).select_from(self.item).where(
-                func.date(self.item.due_date) == today
-            )
-            completed_stmt = select(func.count()).select_from(self.item).where(
-                func.date(self.item.due_date) == today,
-                self.item.status == True
-            )
-
-            total = session.exec(total_stmt).one()
-            print(total)
-            completed = session.exec(completed_stmt).one()
-            print(completed)
-
-        total_count = total
-        completed_count = completed
-
-        if total_count == 0:
-            return 0
-
-        return round((completed_count / total_count) * 100)
-
-    '''
-        
-        
-
-
     '''
     Utilizo métodos protegidos (los que empiezan con _) porque no se debería poder acceder
     a consultas sin ejecutar desde el controlador, sino solo dentro de la clase.

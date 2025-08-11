@@ -19,9 +19,6 @@ class CategoriesRepository(BaseRepository[Category]):
 
 
     def create(self, item:Category)->Category:
-        #current_count=self.count_categories(item.user_id)
-        #if current_count >= self.max_categories:
-         # //  raise ValueError("The maximum number of allowed categories has been reached.")
         with Session(self._db_services.get_engine()) as session:
             existing_category = session.exec(
                 select(Category).where(
@@ -68,14 +65,6 @@ class CategoriesRepository(BaseRepository[Category]):
             session.commit()
 
 
-#CORREGIR ESTE METODO PORQUE NO FUNCIONA BIEN
-#
-    def count_categories(self, user_id: int) -> int:
-        with Session(self._db_services.get_engine()) as session:
-            statement = select(func.count(Category.id)).where(Category.user_id == user_id)
-            result= session.exec(statement)
-            count=result.scalar()
-        return count if count is not None else 0
 
                 
             
