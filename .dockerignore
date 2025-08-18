@@ -1,0 +1,25 @@
+# Entornos virtuales locales
+venv/
+.env
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos de logs
+*.log
+
+# Archivos de control de versiones
+.git
+.gitignore
+
+# Archivos de Docker y Compose (no hacen falta dentro del contenedor)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db
