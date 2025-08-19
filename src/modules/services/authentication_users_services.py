@@ -67,8 +67,8 @@ class AuthenticationUsersServices():
             return user_autenticado
         
         access_token=self._token_services.create_access_token(user_autenticado, user_autenticado.role.scopes)
-        refresh_token=self._token_services.create_refresh_token(user_autenticado)
-        auth_response=AuthResponse(access_token=access_token,refresh_token=refresh_token)
+        #refresh_token=self._token_services.create_refresh_token(user_autenticado)
+        auth_response=AuthResponse(access_token=access_token)
         
         return self.create_response_with_cookies(auth_response)
         
