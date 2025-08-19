@@ -83,12 +83,12 @@ class AuthenticationUsersServices():
         response.set_cookie(
             key=key,
             value=f"Bearer {token}",
-            domain=os.getenv("SITE_DOMAIN"),
+            domain=os.getenv("COOKIE_DOMAIN"),
             path="/",
             #max_age=None,
             secure=True,
             httponly=True,   
-            samesite="none",
+            samesite="lax",
             expires=datetime.now(timezone.utc)+timedelta(days=1)
         )
     
@@ -115,8 +115,8 @@ class AuthenticationUsersServices():
         
     
     def delete_cookies(self, response:Response):
-        response.set_cookie(key="access_token",value="", expires=0,path="/",domain=os.getenv("SITE_DOMAIN"))
-        response.set_cookie(key="refresh_token", value="",expires=0,path="/",domain=os.getenv("SITE_DOMAIN"))
+        response.set_cookie(key="access_token",value="", expires=0,path="/",domain=os.getenv("COOKIE_DOMAIN"))
+        response.set_cookie(key="refresh_token", value="",expires=0,path="/",domain=os.getenv("COOKIE_DOMAIN"))
         return {"message": "Logged out"}
         
         
