@@ -95,7 +95,7 @@ class AuthenticationUsersServices():
     def create_response_with_cookies(self, auth_response:AuthResponse)->Response:
         response=Response(status_code=status.HTTP_302_FOUND)
         self.set_cookie(response,"access_token", auth_response.access_token)
-        self.set_cookie(response,"refresh_token", auth_response.refresh_token)
+        #self.set_cookie(response,"refresh_token", auth_response.refresh_token)
         response.headers["Location"] = os.getenv("SITE_URL")
         return response
    
