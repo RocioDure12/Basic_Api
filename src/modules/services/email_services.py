@@ -28,8 +28,8 @@ class EmailServices:
         mensaje['To'] = destinatario
         mensaje['Subject'] = subject
 
-        api_url = os.getenv("API_URL")
-        cuerpo =f'Haz clic en el siguiente enlace para verificar tu cuenta: {api_url}/verifyemail/{user.verification_code}. Si no solicitaste esto, ignora este correo'
+        site_url = os.getenv("SITE_URL")
+        cuerpo =f'Haz clic en el siguiente enlace para verificar tu cuenta: {site_url}/verifyemail/{user.verification_code}. Si no solicitaste esto, ignora este correo'
 
         mensaje.attach(MIMEText(cuerpo, 'html'))
 

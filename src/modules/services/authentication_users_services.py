@@ -17,7 +17,7 @@ import os
 load_dotenv()
 
 class AuthenticationUsersServices():
-    api_url = os.getenv("API_URL")
+    site_url = os.getenv("SITE_URL")
     _password_services=PasswordServices()
     _users_repository=UsersRepository()
     _token_services= TokenServices()
@@ -29,7 +29,7 @@ class AuthenticationUsersServices():
         user= UserValidationServices.check_user_validity(username)
         if user is None:
             return RedirectResponse(
-                url=f'{self.api_url}/users/login?toast=invalid_credentials',
+                url=f'{self.site_url}/users/login?toast=invalid_credentials',
                 status_code=status.HTTP_303_SEE_OTHER  
             )
         
@@ -37,14 +37,14 @@ class AuthenticationUsersServices():
 
         if not self._password_services.verify_password(user.password, plain_password):
             return RedirectResponse(
-                url=f'{self.api_url}/users/login?toast=invalid_credentials',
+                url=f'{self.site_url}/users/login?toast=invalid_credentials',
                 status_code=status.HTTP_303_SEE_OTHER
                
                 
             )
         if user.disabled:
             return RedirectResponse(
-                url=f'{self.api_url}/users/login?toast=disabled_account',
+                url=f'{self.site_url}/users/login?toast=disabled_account',
                 status_code=status.HTTP_303_SEE_OTHER
           
                 
@@ -53,7 +53,7 @@ class AuthenticationUsersServices():
         if not user.is_verified and user.role_id == 2:
             self._email_services.send_email(user)
             return RedirectResponse(
-                url=f'{self.api_url}/users/login?toast=email_not_verified',
+                url=f'{self.site_url}/users/login?toast=email_not_verified',
                 status_code=status.HTTP_303_SEE_OTHER
             )
             
@@ -83,7 +83,7 @@ class AuthenticationUsersServices():
         response.set_cookie(
             key=key,
             value=f"Bearer {token}",
-            domain="localhost",
+            domain=os.getenv("SITE_DOMAIN"),
             path="/",
             #max_age=None,
             secure=True,
@@ -96,7 +96,7 @@ class AuthenticationUsersServices():
         response=Response(status_code=status.HTTP_302_FOUND)
         self.set_cookie(response,"access_token", auth_response.access_token)
         self.set_cookie(response,"refresh_token", auth_response.refresh_token)
-        response.headers["Location"] = "http://localhost:5173/"
+        response.headers["Location"] = os.getenv("SITE_URL")
         return response
    
         
@@ -115,8 +115,8 @@ class AuthenticationUsersServices():
         
     
     def delete_cookies(self, response:Response):
-        response.set_cookie(key="access_token",value="", expires=0,path="/",domain="localhost")
-        response.set_cookie(key="refresh_token", value="",expires=0,path="/",domain="localhost")
+        response.set_cookie(key="access_token",value="", expires=0,path="/",domain=os.getenv("SITE_DOMAIN"))
+        response.set_cookie(key="refresh_token", value="",expires=0,path="/",domain=os.getenv("SITE_DOMAIN"))
         return {"message": "Logged out"}
         
         

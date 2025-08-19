@@ -15,7 +15,6 @@ load_dotenv()
 
 class UsersRepository(BaseRepository[User]):
     item:Type[User]=User
-    api_url = os.getenv("API_URL")
     
     def __init__(self):
 

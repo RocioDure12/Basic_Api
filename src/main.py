@@ -22,10 +22,7 @@ app.include_router(subtasks_router)
 db=DbServices()
 
 origins = [
-    "http://localhost",
-    "http://localhost:8080",
-    "http://localhost:5173",
-    "http://localhost:8000"
+    os.getenv("SITE_URL")
 ]
 
 app.add_middleware(
