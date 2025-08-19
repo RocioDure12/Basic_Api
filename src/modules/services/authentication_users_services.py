@@ -88,7 +88,7 @@ class AuthenticationUsersServices():
             #max_age=None,
             secure=True,
             httponly=True,   
-            samesite="none",
+            samesite=os.getenv("COOKIE_SAMESITE"),
             expires=datetime.now(timezone.utc)+timedelta(days=1)
         )
     
