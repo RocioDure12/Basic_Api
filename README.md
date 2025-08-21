@@ -38,13 +38,14 @@ La arquitectura sigue el **patrón Repository**, lo que facilita la separación 
 5. **Inicia el servidor:**
     uvicorn app.main:app --reload
 
-6. **Seguridad y Autenticación**
+### 🔐 Seguridad y Autenticación
 
-    -✅La API implementa el estándar OAuth2 con flujo de usuario/contraseña para generar tokens seguros.
-    -✅ JWT con Cookies HTTPOnly – Protege contra ataques XSS. Se adapto la liberia de OAuth2 de Fastapi para soportar la lectura del token desde las cookies.
-    -✅ Cookies seguras (HttpOnly, Secure, SameSite) – Reduce riesgo de robo de sesión.
-    -✅ Gestión de roles (admin / user) – Control de permisos diferenciado.
-    -✅ Verificación por email en el registro – Previene spam y registros falsos.
+- ✅ **OAuth2 con Password Flow** – Genera tokens seguros.  
+- ✅ **JWT con Cookies HTTPOnly** – Protege contra ataques XSS (adaptación de OAuth2 de FastAPI para lectura desde cookies).  
+- ✅ **Cookies seguras** (`HttpOnly`, `Secure`) – Reducen riesgos de robo de sesión.  
+- ✅ **Gestión de roles** (admin / user) – Permisos diferenciados.  
+- ✅ **Verificación por email** – Previene spam y cuentas falsas.  
+
 
     
 📖 Documentación
